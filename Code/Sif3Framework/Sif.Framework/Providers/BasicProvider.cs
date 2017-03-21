@@ -53,10 +53,10 @@ namespace Sif.Framework.Providers
         public override IHttpActionResult Post(List<T> objs, [MatrixParameter] string[] zone = null, [MatrixParameter] string[] context = null)
         {
 
-            if (!authService.VerifyAuthenticationHeader(Request.Headers.Authorization))
-            {
-                return Unauthorized();
-            }
+            //if (!authService.VerifyAuthenticationHeader(Request.Headers.Authorization))
+            //{
+            //    return Unauthorized();
+            //}
 
             // Check ACLs and return StatusCode(HttpStatusCode.Forbidden) if appropriate.
 
@@ -160,10 +160,10 @@ namespace Sif.Framework.Providers
         public override IHttpActionResult Put(List<T> objs, [MatrixParameter] string[] zone = null, [MatrixParameter] string[] context = null)
         {
 
-            if (!authService.VerifyAuthenticationHeader(Request.Headers.Authorization))
-            {
-                return Unauthorized();
-            }
+            //if (!authService.VerifyAuthenticationHeader(Request.Headers.Authorization))
+            //{
+            //    return Unauthorized();
+            //}
 
             // Check ACLs and return StatusCode(HttpStatusCode.Forbidden) if appropriate.
 

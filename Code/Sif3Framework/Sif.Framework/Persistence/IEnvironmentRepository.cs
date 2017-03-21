@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2014 Systemic Pty Ltd
+ * Copyright 2017 Systemic Pty Ltd
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,10 @@ using Environment = Sif.Framework.Model.Infrastructure.Environment;
 namespace Sif.Framework.Persistence
 {
 
-    interface IEnvironmentRepository : IGenericRepository<Environment, Guid>
+    /// <summary>
+    /// Repository class for Environment.
+    /// </summary>
+    public interface IEnvironmentRepository : IGenericRepository<Environment, Guid>
     {
 
         /// <summary>

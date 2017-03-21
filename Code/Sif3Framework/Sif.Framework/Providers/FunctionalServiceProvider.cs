@@ -33,6 +33,7 @@ using System.Reflection;
 using System.Text;
 using System.Web.Http;
 using System.Linq;
+using Sif.Framework.Persistence.NHibernate;
 
 namespace Sif.Framework.Providers
 {
@@ -56,11 +57,11 @@ namespace Sif.Framework.Providers
         {
             if (EnvironmentType.DIRECT.Equals(SettingsManager.ProviderSettings.EnvironmentType))
             {
-                authService = new DirectAuthenticationService(new ApplicationRegisterService(), new EnvironmentService());
+                authService = new DirectAuthenticationService(new ApplicationRegisterService(), new EnvironmentService(new EnvironmentRepository()));
             }
             else if (EnvironmentType.BROKERED.Equals(SettingsManager.ProviderSettings.EnvironmentType))
             {
-                authService = new BrokeredAuthenticationService(new ApplicationRegisterService(), new EnvironmentService());
+                authService = new BrokeredAuthenticationService(new ApplicationRegisterService(), new EnvironmentService(new EnvironmentRepository()));
             }
         }
 

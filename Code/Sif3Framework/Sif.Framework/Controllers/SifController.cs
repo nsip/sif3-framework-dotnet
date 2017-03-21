@@ -37,7 +37,7 @@ namespace Sif.Framework.Controllers
         where UI : new()
         where DB : IPersistable<Guid>, new()
     {
-        protected IAuthenticationService authService;
+        //protected IAuthenticationService authService;
         protected ISifService<UI, DB> service;
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace Sif.Framework.Controllers
         public SifController(ISifService<UI, DB> service)
         {
             this.service = service;
-            authService = new DirectAuthenticationService(new ApplicationRegisterService(), new EnvironmentService());
+            //authService = new DirectAuthenticationService(new ApplicationRegisterService(), new EnvironmentService());
         }
 
         /// <summary>
@@ -59,10 +59,10 @@ namespace Sif.Framework.Controllers
         public virtual void Delete(Guid id, [MatrixParameter] string[] zone = null, [MatrixParameter] string[] context = null)
         {
 
-            if (!authService.VerifyAuthenticationHeader(Request.Headers.Authorization))
-            {
-                throw new HttpResponseException(HttpStatusCode.Unauthorized);
-            }
+            //if (!authService.VerifyAuthenticationHeader(Request.Headers.Authorization))
+            //{
+            //    throw new HttpResponseException(HttpStatusCode.Unauthorized);
+            //}
 
             try
             {
@@ -96,10 +96,10 @@ namespace Sif.Framework.Controllers
         public virtual UI Get(Guid id, [MatrixParameter] string[] zone = null, [MatrixParameter] string[] context = null)
         {
 
-            if (!authService.VerifyAuthenticationHeader(Request.Headers.Authorization))
-            {
-                throw new HttpResponseException(HttpStatusCode.Unauthorized);
-            }
+            //if (!authService.VerifyAuthenticationHeader(Request.Headers.Authorization))
+            //{
+            //    throw new HttpResponseException(HttpStatusCode.Unauthorized);
+            //}
 
             UI item;
 
@@ -128,10 +128,10 @@ namespace Sif.Framework.Controllers
         public virtual ICollection<UI> Get([MatrixParameter] string[] zone = null, [MatrixParameter] string[] context = null)
         {
 
-            if (!authService.VerifyAuthenticationHeader(Request.Headers.Authorization))
-            {
-                throw new HttpResponseException(HttpStatusCode.Unauthorized);
-            }
+            //if (!authService.VerifyAuthenticationHeader(Request.Headers.Authorization))
+            //{
+            //    throw new HttpResponseException(HttpStatusCode.Unauthorized);
+            //}
 
             ICollection<UI> items;
 
@@ -158,10 +158,10 @@ namespace Sif.Framework.Controllers
         public virtual HttpResponseMessage Post(UI item, [MatrixParameter] string[] zone = null, [MatrixParameter] string[] context = null)
         {
 
-            if (!authService.VerifyAuthenticationHeader(Request.Headers.Authorization))
-            {
-                throw new HttpResponseException(HttpStatusCode.Unauthorized);
-            }
+            //if (!authService.VerifyAuthenticationHeader(Request.Headers.Authorization))
+            //{
+            //    throw new HttpResponseException(HttpStatusCode.Unauthorized);
+            //}
             
             HttpResponseMessage responseMessage = null;
 
@@ -192,10 +192,10 @@ namespace Sif.Framework.Controllers
         public virtual void Put(Guid id, UI item, [MatrixParameter] string[] zone = null, [MatrixParameter] string[] context = null)
         {
 
-            if (!authService.VerifyAuthenticationHeader(Request.Headers.Authorization))
-            {
-                throw new HttpResponseException(HttpStatusCode.Unauthorized);
-            }
+            //if (!authService.VerifyAuthenticationHeader(Request.Headers.Authorization))
+            //{
+            //    throw new HttpResponseException(HttpStatusCode.Unauthorized);
+            //}
 
             try
             {

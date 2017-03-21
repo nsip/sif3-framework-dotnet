@@ -204,23 +204,31 @@ namespace Sif.Framework.Utils
                     requestStream.Write(payload, 0, payload.Length);
                 }
 
-                using (WebResponse response = request.GetResponse())
+                try
                 {
-                    string responseString = null;
-
-                    if (response != null)
+                    using (WebResponse response = request.GetResponse())
                     {
+                        string responseString = null;
 
-                        using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                        if (response != null)
                         {
-                            responseString = reader.ReadToEnd().Trim();
+
+                            using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                            {
+                                responseString = reader.ReadToEnd().Trim();
+                            }
+
                         }
 
+                        return responseString;
                     }
 
-                    return responseString;
                 }
-
+                catch (Exception e)
+                {
+                    System.Console.WriteLine($"Blah is {e.Message}");
+                    throw e;
+                }
             }
 
         }

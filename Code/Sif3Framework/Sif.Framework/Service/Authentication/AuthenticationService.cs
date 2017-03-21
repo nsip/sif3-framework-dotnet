@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2015 Systemic Pty Ltd
+ * Copyright 2017 Systemic Pty Ltd
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ namespace Sif.Framework.Service.Authentication
     /// <summary>
     /// <see cref="Sif.Framework.Service.Authentication.IAuthenticationService">IAuthenticationService</see>
     /// </summary>
-    abstract class AuthenticationService : IAuthenticationService
+    public abstract class AuthenticationService : IAuthenticationService
     {
 
         /// <summary>

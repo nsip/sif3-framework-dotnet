@@ -16,6 +16,7 @@
 
 using Sif.Framework.Model.Exceptions;
 using Sif.Framework.Model.Infrastructure;
+using Sif.Framework.Persistence;
 using Sif.Framework.Persistence.NHibernate;
 using Sif.Framework.Service.Mapper;
 using Sif.Framework.Utils;
@@ -162,8 +163,8 @@ namespace Sif.Framework.Service.Infrastructure
             return destinationServices;
         }
 
-        public EnvironmentService()
-            : base(new EnvironmentRepository())
+        public EnvironmentService(IEnvironmentRepository environmentRepository)
+            : base(environmentRepository)
         {
 
         }

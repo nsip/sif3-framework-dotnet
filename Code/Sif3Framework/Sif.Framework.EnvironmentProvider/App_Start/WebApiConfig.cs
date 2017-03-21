@@ -1,4 +1,5 @@
-﻿using System.Web.Http;
+﻿using Sif.Framework.WebApi.Filters;
+using System.Web.Http;
 
 namespace Sif.Framework.EnvironmentProvider
 {
@@ -16,6 +17,9 @@ namespace Sif.Framework.EnvironmentProvider
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+
+            //config.Filters.Add(new BasicAuthenticationAttribute());
+            config.SuppressHostPrincipal();
         }
     }
 }

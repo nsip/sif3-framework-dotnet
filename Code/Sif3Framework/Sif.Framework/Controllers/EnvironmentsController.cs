@@ -15,8 +15,10 @@
  */
 
 using Sif.Framework.Model.Exceptions;
+using Sif.Framework.Service.Authentication;
 using Sif.Framework.Service.Infrastructure;
 using Sif.Framework.Utils;
+using Sif.Framework.WebApi.Filters;
 using Sif.Framework.WebApi.ModelBinders;
 using Sif.Specification.Infrastructure;
 using System;
@@ -40,6 +42,8 @@ namespace Sif.Framework.Controllers
         protected static readonly string defaultAuthenticationMethod = "Basic";
         protected static readonly string defaultConsumerName = "Sif3FrameworkConsumer";
         protected static readonly string defaultSupportedInfrastructureVersion = "3.0.1";
+
+        protected IAuthenticationService authService;
 
         /// <summary>
         /// Create an Environment, using default values where applicable.
@@ -124,10 +128,10 @@ namespace Sif.Framework.Controllers
         /// <summary>
         /// Create an instance.
         /// </summary>
-        public EnvironmentsController()
-            : base(new EnvironmentService())
+        public EnvironmentsController(IEnvironmentService environmentService, IAuthenticationService authService)
+            : base(environmentService)
         {
-
+            this.authService = authService;
         }
 
         /// <summary>
@@ -140,6 +144,7 @@ namespace Sif.Framework.Controllers
             throw new HttpResponseException(HttpStatusCode.Forbidden);
         }
 
+        [BasicAuthentication]
         [Route("{id}")]
         [HttpGet]
         public override environmentType Get(Guid id, [MatrixParameter] string[] zone = null, [MatrixParameter] string[] context = null)
@@ -229,6 +234,7 @@ namespace Sif.Framework.Controllers
             throw new HttpResponseException(HttpStatusCode.Forbidden);
         }
 
+        [BasicAuthentication]
         [Route("{id}")]
         [HttpDelete]
         public override void Delete(Guid id, [MatrixParameter] string[] zone = null, [MatrixParameter] string[] context = null)

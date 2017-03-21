@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2016 Systemic Pty Ltd
+ * Copyright 2017 Systemic Pty Ltd
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+using Sif.Framework.Service.Authentication;
+using Sif.Framework.Service.Infrastructure;
 using Sif.Specification.Infrastructure;
 using System.Net.Http;
 using System.Web.Http;
@@ -25,8 +27,16 @@ namespace Sif.Framework.EnvironmentProvider.Controllers
     /// Valid single operations: POST, GET, DELETE.
     /// Valid multiple operations: none.
     /// </summary>
-    public class EnvironmentsController : Sif.Framework.Controllers.EnvironmentsController
+    public class EnvironmentsController : Framework.Controllers.EnvironmentsController
     {
+
+        /// <summary>
+        /// Create an instance.
+        /// </summary>
+        public EnvironmentsController(IEnvironmentService environmentService, IAuthenticationService authService)
+            : base(environmentService, authService)
+        {
+        }
 
         // POST api/{controller}
         [HttpPost]

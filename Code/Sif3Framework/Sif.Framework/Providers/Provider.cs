@@ -48,7 +48,7 @@ namespace Sif.Framework.Providers
         /// <summary>
         /// Service used for request authentication.
         /// </summary>
-        protected IAuthenticationService authService;
+        //protected IAuthenticationService authService;
 
         /// <summary>
         /// Object service associated with this Provider.
@@ -62,14 +62,14 @@ namespace Sif.Framework.Providers
         protected Provider()
         {
 
-            if (EnvironmentType.DIRECT.Equals(SettingsManager.ProviderSettings.EnvironmentType))
-            {
-                authService = new DirectAuthenticationService(new ApplicationRegisterService(), new EnvironmentService());
-            }
-            else if (EnvironmentType.BROKERED.Equals(SettingsManager.ProviderSettings.EnvironmentType))
-            {
-                authService = new BrokeredAuthenticationService(new ApplicationRegisterService(), new EnvironmentService());
-            }
+            //if (EnvironmentType.DIRECT.Equals(SettingsManager.ProviderSettings.EnvironmentType))
+            //{
+            //    authService = new DirectAuthenticationService(new ApplicationRegisterService(), new EnvironmentService());
+            //}
+            //else if (EnvironmentType.BROKERED.Equals(SettingsManager.ProviderSettings.EnvironmentType))
+            //{
+            //    authService = new BrokeredAuthenticationService(new ApplicationRegisterService(), new EnvironmentService());
+            //}
 
         }
 
@@ -89,10 +89,10 @@ namespace Sif.Framework.Providers
         public virtual IHttpActionResult Post(TSingle obj, [MatrixParameter] string[] zone = null, [MatrixParameter] string[] context = null)
         {
 
-            if (!authService.VerifyAuthenticationHeader(Request.Headers.Authorization))
-            {
-                return Unauthorized();
-            }
+            //if (!authService.VerifyAuthenticationHeader(Request.Headers.Authorization))
+            //{
+            //    return Unauthorized();
+            //}
 
             // Check ACLs and return StatusCode(HttpStatusCode.Forbidden) if appropriate.
 
@@ -174,10 +174,10 @@ namespace Sif.Framework.Providers
         public virtual IHttpActionResult Post(TMultiple obj, [MatrixParameter] string[] zone = null, [MatrixParameter] string[] context = null)
         {
 
-            if (!authService.VerifyAuthenticationHeader(Request.Headers.Authorization))
-            {
-                return Unauthorized();
-            }
+            //if (!authService.VerifyAuthenticationHeader(Request.Headers.Authorization))
+            //{
+            //    return Unauthorized();
+            //}
 
             // Check ACLs and return StatusCode(HttpStatusCode.Forbidden) if appropriate.
 
@@ -201,10 +201,10 @@ namespace Sif.Framework.Providers
         public virtual IHttpActionResult Get([FromUri(Name = "id")] string refId, [MatrixParameter] string[] zone = null, [MatrixParameter] string[] context = null)
         {
 
-            if (!authService.VerifyAuthenticationHeader(Request.Headers.Authorization))
-            {
-                return Unauthorized();
-            }
+            //if (!authService.VerifyAuthenticationHeader(Request.Headers.Authorization))
+            //{
+            //    return Unauthorized();
+            //}
 
             // Check ACLs and return StatusCode(HttpStatusCode.Forbidden) if appropriate.
 
@@ -390,10 +390,10 @@ namespace Sif.Framework.Providers
         public virtual IHttpActionResult Get(TSingle obj, string changesSinceMarker = null, [MatrixParameter] string[] zone = null, [MatrixParameter] string[] context = null)
         {
 
-            if (!authService.VerifyAuthenticationHeader(Request.Headers.Authorization))
-            {
-                return Unauthorized();
-            }
+            //if (!authService.VerifyAuthenticationHeader(Request.Headers.Authorization))
+            //{
+            //    return Unauthorized();
+            //}
 
             // Check ACLs and return StatusCode(HttpStatusCode.Forbidden) if appropriate.
 
@@ -470,10 +470,10 @@ namespace Sif.Framework.Providers
             [MatrixParameter] string[] context = null)
         {
 
-            if (!authService.VerifyAuthenticationHeader(Request.Headers.Authorization))
-            {
-                return Unauthorized();
-            }
+            //if (!authService.VerifyAuthenticationHeader(Request.Headers.Authorization))
+            //{
+            //    return Unauthorized();
+            //}
 
             // Check ACLs and return StatusCode(HttpStatusCode.Forbidden) if appropriate.
 
@@ -546,10 +546,10 @@ namespace Sif.Framework.Providers
         public virtual IHttpActionResult Put([FromUri(Name = "id")] string refId, TSingle obj, [MatrixParameter] string[] zone = null, [MatrixParameter] string[] context = null)
         {
 
-            if (!authService.VerifyAuthenticationHeader(Request.Headers.Authorization))
-            {
-                return Unauthorized();
-            }
+            //if (!authService.VerifyAuthenticationHeader(Request.Headers.Authorization))
+            //{
+            //    return Unauthorized();
+            //}
 
             // Check ACLs and return StatusCode(HttpStatusCode.Forbidden) if appropriate.
 
@@ -596,10 +596,10 @@ namespace Sif.Framework.Providers
         public virtual IHttpActionResult Put(TMultiple obj, [MatrixParameter] string[] zone = null, [MatrixParameter] string[] context = null)
         {
 
-            if (!authService.VerifyAuthenticationHeader(Request.Headers.Authorization))
-            {
-                return Unauthorized();
-            }
+            //if (!authService.VerifyAuthenticationHeader(Request.Headers.Authorization))
+            //{
+            //    return Unauthorized();
+            //}
 
             // Check ACLs and return StatusCode(HttpStatusCode.Forbidden) if appropriate.
 
@@ -622,10 +622,10 @@ namespace Sif.Framework.Providers
         public virtual IHttpActionResult Delete([FromUri(Name = "id")] string refId, [MatrixParameter] string[] zone = null, [MatrixParameter] string[] context = null)
         {
 
-            if (!authService.VerifyAuthenticationHeader(Request.Headers.Authorization))
-            {
-                return Unauthorized();
-            }
+            //if (!authService.VerifyAuthenticationHeader(Request.Headers.Authorization))
+            //{
+            //    return Unauthorized();
+            //}
 
             // Check ACLs and return StatusCode(HttpStatusCode.Forbidden) if appropriate.
 
@@ -667,10 +667,10 @@ namespace Sif.Framework.Providers
         public virtual IHttpActionResult Delete(deleteRequestType deleteRequest, [MatrixParameter] string[] zone = null, [MatrixParameter] string[] context = null)
         {
 
-            if (!authService.VerifyAuthenticationHeader(Request.Headers.Authorization))
-            {
-                return Unauthorized();
-            }
+            //if (!authService.VerifyAuthenticationHeader(Request.Headers.Authorization))
+            //{
+            //    return Unauthorized();
+            //}
 
             // Check ACLs and return StatusCode(HttpStatusCode.Forbidden) if appropriate.
 
@@ -738,10 +738,10 @@ namespace Sif.Framework.Providers
         public virtual IHttpActionResult Head([MatrixParameter] string[] zone = null, [MatrixParameter] string[] context = null)
         {
 
-            if (!authService.VerifyAuthenticationHeader(Request.Headers.Authorization))
-            {
-                return Unauthorized();
-            }
+            //if (!authService.VerifyAuthenticationHeader(Request.Headers.Authorization))
+            //{
+            //    return Unauthorized();
+            //}
 
             // Check ACLs and return StatusCode(HttpStatusCode.Forbidden) if appropriate.
 

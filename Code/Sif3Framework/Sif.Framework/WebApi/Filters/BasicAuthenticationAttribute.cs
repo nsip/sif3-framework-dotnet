@@ -30,7 +30,7 @@ namespace Sif.Framework.WebApi.Filters
         {
             IAuthenticationService authService = GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IAuthenticationService)) as IAuthenticationService;
 
-            if (!authService.VerifyAuthenticationHeader(context.Request.Headers.Authorization))
+            if (!authService.VerifyAuthenticationHeader(context.Request.Headers))
             {
                 context.ErrorResult = new AuthenticationFailureResult("Invalid credentials", context.Request);
             }

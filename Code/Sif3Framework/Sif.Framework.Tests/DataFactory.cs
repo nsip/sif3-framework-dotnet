@@ -169,18 +169,12 @@ namespace Sif.Framework.Model.Infrastructure
 
             Service studentPersonalsService = new Service
             {
-                ContextId = "DEFAULT",
-                Name = "StudentPersonals",
-            {
-                { adminRight.Type, adminRight }
+                ContextId = "DEFAULT", Name = "StudentPersonals", Rights = rights, Type = "OBJECT"
             };
 
             Service schoolInfosService = new Service
             {
-                ContextId = "DEFAULT",
-                Name = "SchoolInfos",
-                Rights = rights,
-                Type = "OBJECT"
+                ContextId = "DEFAULT", Name = "SchoolInfos", Rights = rights, Type = "OBJECT"
             };
 
             ICollection<Service> services = new SortedSet<Service>

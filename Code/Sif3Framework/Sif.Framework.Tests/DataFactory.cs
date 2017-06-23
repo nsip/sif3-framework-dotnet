@@ -83,8 +83,8 @@ namespace Sif.Framework.Model.Infrastructure
                 AdapterProduct = adapterProduct,
                 ApplicationKey = "UnitTesting",
                 ApplicationProduct = applicationProduct,
-                DataModelNamespace = "http://www.sifassociation.org/au/datamodel/1.4",
-                SupportedInfrastructureVersion = "3.0",
+                DataModelNamespace = "http://www.sifassociation.org/datamodel/au/3.4",
+                SupportedInfrastructureVersion = "3.2",
                 Transport = "REST"
             };
 
@@ -171,8 +171,8 @@ namespace Sif.Framework.Model.Infrastructure
             {
                 ContextId = "DEFAULT",
                 Name = "StudentPersonals",
-                Rights = rights,
-                Type = "OBJECT"
+            {
+                { adminRight.Type, adminRight }
             };
 
             Service schoolInfosService = new Service

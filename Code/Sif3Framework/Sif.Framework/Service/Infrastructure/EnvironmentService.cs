@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2016 Systemic Pty Ltd
+ * Copyright 2017 Systemic Pty Ltd
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,8 +28,17 @@ using Environment = Sif.Framework.Model.Infrastructure.Environment;
 namespace Sif.Framework.Service.Infrastructure
 {
 
+    /// <summary>
+    /// Service class for Environment objects.
+    /// </summary>
     public class EnvironmentService : SifService<environmentType, Environment>, IEnvironmentService
     {
+
+        /// <summary>
+        /// Create a copy of a Zone object.
+        /// </summary>
+        /// <param name="sourceZone">Zone object to copy.</param>
+        /// <returns>New copy of the Zone object.</returns>
         private Zone CopyDefaultZone(Zone sourceZone)
         {
             Zone destinationZone = null;
@@ -48,6 +57,11 @@ namespace Sif.Framework.Service.Infrastructure
             return destinationZone;
         }
 
+        /// <summary>
+        /// Create a copy of a dictionary of InfrastructureService objects.
+        /// </summary>
+        /// <param name="sourceInfrastructureServices">Dictionary of InfrastructureService objects to copy.</param>
+        /// <returns>New copy of the dictionary of InfrastructureService objects.</returns>
         private IDictionary<InfrastructureServiceNames, InfrastructureService> CopyInfrastructureServices(IDictionary<InfrastructureServiceNames, InfrastructureService> sourceInfrastructureServices)
         {
             IDictionary<InfrastructureServiceNames, InfrastructureService> destinationInfrastructureServices = null;
@@ -69,6 +83,11 @@ namespace Sif.Framework.Service.Infrastructure
             return destinationInfrastructureServices;
         }
 
+        /// <summary>
+        /// Create a copy of a dictionary of Property objects.
+        /// </summary>
+        /// <param name="sourceProperties">Dictionary of Property objects to copy.</param>
+        /// <returns>New copy of the dictionary of Property objects.</returns>
         private IDictionary<string, Property> CopyProperties(IDictionary<string, Property> sourceProperties)
         {
             IDictionary<string, Property> destinationProperties = null;
@@ -90,6 +109,11 @@ namespace Sif.Framework.Service.Infrastructure
             return destinationProperties;
         }
 
+        /// <summary>
+        /// Create a copy of a dictionary of ProvisionedZone objects.
+        /// </summary>
+        /// <param name="sourceProvisionedZones">Dictionary of ProvisionedZone objects to copy.</param>
+        /// <returns>New copy of the dictionary of ProvisionedZone objects.</returns>
         private IDictionary<string, ProvisionedZone> CopyProvisionedZones(IDictionary<string, ProvisionedZone> sourceProvisionedZones)
         {
             IDictionary<string, ProvisionedZone> destinationProvisionedZones = null;
@@ -117,6 +141,11 @@ namespace Sif.Framework.Service.Infrastructure
             return destinationProvisionedZones;
         }
 
+        /// <summary>
+        /// Create a copy of a dictionary of Right objects.
+        /// </summary>
+        /// <param name="sourceRights">Dictionary of Right objects to copy.</param>
+        /// <returns>New copy of the dictionary of Right objects.</returns>
         private IDictionary<string, Right> CopyRights(IDictionary<string, Right> sourceRights)
         {
             IDictionary<string, Right> destinationRights = null;
@@ -138,6 +167,11 @@ namespace Sif.Framework.Service.Infrastructure
             return destinationRights;
         }
 
+        /// <summary>
+        /// Create a copy of a collection of Service objects.
+        /// </summary>
+        /// <param name="sourceServices">Collection of Service objects to copy.</param>
+        /// <returns>New copy of the collection of Service objects.</returns>
         private ICollection<Model.Infrastructure.Service> CopyServices(ICollection<Model.Infrastructure.Service> sourceServices)
         {
             ICollection<Model.Infrastructure.Service> destinationServices = null;
@@ -163,13 +197,18 @@ namespace Sif.Framework.Service.Infrastructure
             return destinationServices;
         }
 
+        /// <summary>
+        /// Create a default instance.
+        /// </summary>
         public EnvironmentService(IEnvironmentRepository environmentRepository)
             : base(environmentRepository)
         {
-
         }
 
-        public override Guid Create(environmentType item, string zone = null, string context = null)
+        /// <summary>
+        /// <see cref="SifService{UI, DB}.Create(UI, string, string)"/>
+        /// </summary>
+        public override Guid Create(environmentType item, string zoneId = null, string contextId = null)
         {
             EnvironmentRegister environmentRegister =
                 (new EnvironmentRegisterService()).RetrieveByUniqueIdentifiers
@@ -177,7 +216,7 @@ namespace Sif.Framework.Service.Infrastructure
 
             if (environmentRegister == null)
             {
-                string errorMessage = String.Format("Environment with application key of {0}, solution ID of {1}, instance ID of {2} and user token of {3} does NOT exist.",
+                string errorMessage = string.Format("Environment with application key of {0}, solution ID of {1}, instance ID of {2} and user token of {3} does NOT exist.",
                     item.applicationInfo.applicationKey, (item.solutionId == null ? "[null]" : item.solutionId), (item.instanceId == null ? "[null]" : item.instanceId), (item.userToken == null ? "[null]" : item.userToken));
                 throw new AlreadyExistsException(errorMessage);
             }
@@ -188,7 +227,7 @@ namespace Sif.Framework.Service.Infrastructure
 
             if (environmentType != null)
             {
-                string errorMessage = String.Format("A session token already exists for environment with application key of {0}, solution ID of {1}, instance ID of {2} and user token of {3}.",
+                string errorMessage = string.Format("A session token already exists for environment with application key of {0}, solution ID of {1}, instance ID of {2} and user token of {3}.",
                     item.applicationInfo.applicationKey, (item.solutionId == null ? "[null]" : item.solutionId), (item.instanceId == null ? "[null]" : item.instanceId), (item.userToken == null ? "[null]" : item.userToken));
                 throw new AlreadyExistsException(errorMessage);
             }
@@ -230,6 +269,9 @@ namespace Sif.Framework.Service.Infrastructure
             return environmentId;
         }
 
+        /// <summary>
+        /// <see cref="IEnvironmentService.RetrieveBySessionToken(string)"/>
+        /// </summary>
         public virtual environmentType RetrieveBySessionToken(string sessionToken)
         {
             Environment environment = ((EnvironmentRepository)repository).RetrieveBySessionToken(sessionToken);

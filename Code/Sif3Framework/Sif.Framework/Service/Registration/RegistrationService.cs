@@ -25,6 +25,7 @@ using Sif.Framework.Service.Sessions;
 using Sif.Framework.Utils;
 using Sif.Specification.Infrastructure;
 using System;
+using System.Net;
 using System.Reflection;
 using System.Xml;
 using Environment = Sif.Framework.Model.Infrastructure.Environment;
@@ -106,18 +107,18 @@ namespace Sif.Framework.Service.Registration
             Registered = false;
         }
         /// <summary>
-        /// <see cref="IRegistrationService.Register()">Register</see>
+        /// <see cref="IRegistrationService.Register(WebProxy)">Register</see>
         /// </summary>
-        public Environment Register()
+        public Environment Register(WebProxy webProxy = null)
         {
             Environment environment = EnvironmentUtils.LoadFromSettings(SettingsManager.ProviderSettings);
-            return Register(ref environment);
+            return Register(ref environment, webProxy);
         }
 
         /// <summary>
-        /// <see cref="IRegistrationService.Register(ref Environment)">Register</see>
+        /// <see cref="IRegistrationService.Register(ref Environment, WebProxy)">Register</see>
         /// </summary>
-        public Environment Register(ref Environment environment)
+        public Environment Register(ref Environment environment, WebProxy webProxy = null)
         {
 
             if (Registered)
@@ -132,7 +133,7 @@ namespace Sif.Framework.Service.Registration
                 string storedSessionToken = sessionService.RetrieveSessionToken(environment.ApplicationInfo.ApplicationKey, environment.SolutionId, environment.UserToken, environment.InstanceId);
                 AuthorisationToken = authorisationTokenService.Generate(storedSessionToken, settings.SharedSecret);
                 string storedEnvironmentUrl = sessionService.RetrieveEnvironmentUrl(environment.ApplicationInfo.ApplicationKey, environment.SolutionId, environment.UserToken, environment.InstanceId);
-                string environmentXml = HttpUtils.GetRequest(storedEnvironmentUrl, AuthorisationToken);
+                string environmentXml = HttpUtils.GetRequest(storedEnvironmentUrl, AuthorisationToken, webProxy: webProxy);
 
                 if (log.IsDebugEnabled) log.Debug("Environment XML from GET request ...");
                 if (log.IsDebugEnabled) log.Debug(environmentXml);
@@ -161,7 +162,7 @@ namespace Sif.Framework.Service.Registration
                 AuthorisationToken initialToken = authorisationTokenService.Generate(environment.ApplicationInfo.ApplicationKey, settings.SharedSecret);
                 environmentType environmentTypeToSerialise = MapperFactory.CreateInstance<Environment, environmentType>(environment);
                 string body = SerialiserFactory.GetXmlSerialiser<environmentType>().Serialise(environmentTypeToSerialise);
-                string environmentXml = HttpUtils.PostRequest(settings.EnvironmentUrl, initialToken, body);
+                string environmentXml = HttpUtils.PostRequest(settings.EnvironmentUrl, initialToken, body, webProxy: webProxy);
 
                 if (log.IsDebugEnabled) log.Debug("Environment XML from POST request ...");
                 if (log.IsDebugEnabled) log.Debug(environmentXml);
@@ -185,11 +186,11 @@ namespace Sif.Framework.Service.Registration
 
                     if (environmentUrl != null)
                     {
-                        HttpUtils.DeleteRequest(environmentUrl, AuthorisationToken);
+                        HttpUtils.DeleteRequest(environmentUrl, AuthorisationToken, webProxy: webProxy);
                     }
                     else if (!string.IsNullOrWhiteSpace(TryParseEnvironmentUrl(environmentXml)))
                     {
-                        HttpUtils.DeleteRequest(TryParseEnvironmentUrl(environmentXml), AuthorisationToken);
+                        HttpUtils.DeleteRequest(TryParseEnvironmentUrl(environmentXml), AuthorisationToken, webProxy: webProxy);
                     }
 
                     throw;
@@ -203,9 +204,9 @@ namespace Sif.Framework.Service.Registration
         }
 
         /// <summary>
-        /// <see cref="IRegistrationService.Unregister(bool?)">Unregister</see>
+        /// <see cref="IRegistrationService.Unregister(bool?, WebProxy)">Unregister</see>
         /// </summary>
-        public void Unregister(bool? deleteOnUnregister = null)
+        public void Unregister(bool? deleteOnUnregister = null, WebProxy webProxy = null)
         {
 
             if (Registered)
@@ -213,7 +214,7 @@ namespace Sif.Framework.Service.Registration
 
                 if (deleteOnUnregister ?? settings.DeleteOnUnregister)
                 {
-                    string xml = HttpUtils.DeleteRequest(environmentUrl, AuthorisationToken);
+                    string xml = HttpUtils.DeleteRequest(environmentUrl, AuthorisationToken, webProxy: webProxy);
                     sessionService.RemoveSession(sessionToken);
                 }
 

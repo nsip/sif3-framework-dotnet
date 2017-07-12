@@ -16,6 +16,7 @@
 
 using Sif.Framework.Model.Authentication;
 using Sif.Framework.Model.Infrastructure;
+using System.Net;
 
 namespace Sif.Framework.Service.Registration
 {
@@ -41,22 +42,24 @@ namespace Sif.Framework.Service.Registration
         /// Register service with an Environment service (Broker or Environment Provider). This must be the first
         /// method called, and only once. Subsequent calls are ignored.
         /// </summary>
-        Environment Register();
+        Environment Register(WebProxy webProxy = null);
 
-        /// <summary>
-        /// Register service with an Environment service (Broker or Environment Provider). This must be the first
-        /// method called, and only once. Subsequent calls are ignored.
-        /// </summary>
-        /// <param name="environment">Environment used for registration.</param>
-        Environment Register(ref Environment environment);
+		/// <summary>
+		/// Register service with an Environment service (Broker or Environment Provider). This must be the first
+		/// method called, and only once. Subsequent calls are ignored.
+		/// </summary>
+		/// <param name="environment">Environment used for registration.</param>
+		/// <param name="webProxy">Provides the proxy settings if required</param>
+		Environment Register(ref Environment environment, WebProxy webProxy = null);
 
-        /// <summary>
-        /// Unregister service from an Environment service (Broker or Environment Provider). This must be the last
-        /// method called.
-        /// </summary>
-        /// <param name="deleteOnUnregister">If true, remove session data on unregister. If false, maintain session
-        /// data. If null, use the setting stored in SifFramework.config.</param>
-        void Unregister(bool? deleteOnUnregister = null);
+		/// <summary>
+		/// Unregister service from an Environment service (Broker or Environment Provider). This must be the last
+		/// method called.
+		/// </summary>
+		/// <param name="deleteOnUnregister">If true, remove session data on unregister. If false, maintain session
+		/// data. If null, use the setting stored in SifFramework.config.</param>
+		/// <param name="webProxy">Provides the proxy settings if required</param>
+		void Unregister(bool? deleteOnUnregister = null, WebProxy webProxy = null);
 
     }
 

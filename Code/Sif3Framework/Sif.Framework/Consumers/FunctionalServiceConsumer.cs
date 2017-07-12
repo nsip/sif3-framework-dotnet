@@ -168,14 +168,15 @@ namespace Sif.Framework.Consumers
             return EnvironmentUtils.ParseServiceUrl(EnvironmentTemplate, ServiceType.FUNCTIONAL) + "/" + jobName + "s";
         }
 
-        /// <summary>
-        /// Create a single Job with the defaults provided, and persist it to the data store
-        /// </summary>
-        /// <param name="job">Job object with defaults to use when creating the Job</param>
-        /// <param name="zoneId">The zone in which to create the Job</param>
-        /// <param name="contextId">The context in which to create the Job</param>
-        /// <returns>The created Job object</returns>
-        public virtual Job Create(Job job, string zoneId = null, string contextId = null)
+		/// <summary>
+		/// Create a single Job with the defaults provided, and persist it to the data store
+		/// </summary>
+		/// <param name="job">Job object with defaults to use when creating the Job</param>
+		/// <param name="zoneId">The zone in which to create the Job</param>
+		/// <param name="contextId">The context in which to create the Job</param>
+		/// <param name="webProxy">Provides the proxy settings if required</param>
+		/// <returns>The created Job object</returns>
+		public virtual Job Create(Job job, string zoneId = null, string contextId = null, WebProxy webProxy = null)
         {
             checkRegistered();
             
@@ -183,21 +184,22 @@ namespace Sif.Framework.Consumers
 
             string url = GetURLPrefix(job.Name) + "/" + job.Name + HttpUtils.MatrixParameters(zoneId, contextId);
             string body = SerialiseSingle<Job, jobType>(job);
-            string xml = HttpUtils.PostRequest(url, RegistrationService.AuthorisationToken, body, ServiceType.FUNCTIONAL);
+            string xml = HttpUtils.PostRequest(url, RegistrationService.AuthorisationToken, body, ServiceType.FUNCTIONAL, webProxy: webProxy);
             if (log.IsDebugEnabled) log.Debug("XML from POST request ...");
             if (log.IsDebugEnabled) log.Debug(xml);
 
             return DeserialiseSingle<Job, jobType>(xml);
         }
 
-        /// <summary>
-        /// Create a multiple Jobs with the defaults provided, and persist it to the data store
-        /// </summary>
-        /// <param name="jobs">Job objects with defaults to use when creating the Jobs</param>
-        /// <param name="zoneId">The zone in which to create the Jobs</param>
-        /// <param name="contextId">The context in which to create the Jobs</param>
-        /// <returns>A MultipleCreateResponse object</returns>
-        public virtual MultipleCreateResponse Create(List<Job> jobs, string zoneId = null, string contextId = null)
+		/// <summary>
+		/// Create a multiple Jobs with the defaults provided, and persist it to the data store
+		/// </summary>
+		/// <param name="jobs">Job objects with defaults to use when creating the Jobs</param>
+		/// <param name="zoneId">The zone in which to create the Jobs</param>
+		/// <param name="contextId">The context in which to create the Jobs</param>
+		/// <param name="webProxy">Provides the proxy settings if required</param>
+		/// <returns>A MultipleCreateResponse object</returns>
+		public virtual MultipleCreateResponse Create(List<Job> jobs, string zoneId = null, string contextId = null, WebProxy webProxy = null)
         {
             checkRegistered();
 
@@ -205,7 +207,7 @@ namespace Sif.Framework.Consumers
 
             string url = GetURLPrefix(jobName) + HttpUtils.MatrixParameters(zoneId, contextId);
             string body = SerialiseMultiple(jobs);
-            string xml = HttpUtils.PostRequest(url, RegistrationService.AuthorisationToken, body, ServiceType.FUNCTIONAL);
+            string xml = HttpUtils.PostRequest(url, RegistrationService.AuthorisationToken, body, ServiceType.FUNCTIONAL, webProxy: webProxy);
             if (log.IsDebugEnabled) log.Debug("XML from POST request ...");
             if (log.IsDebugEnabled) log.Debug(xml);
             createResponseType createResponseType = SerialiserFactory.GetXmlSerialiser<createResponseType>().Deserialise(xml);
@@ -246,14 +248,15 @@ namespace Sif.Framework.Consumers
             return fetched;
         }
 
-        /// <summary>
-        /// Get a single Job
-        /// </summary>
-        /// <param name="job">The job template of the Job to fetch, must have name and id properties populated.</param>
-        /// <param name="zoneId">The zone in which to perform the request.</param>
-        /// <param name="contextId">The context in which to perform the request.</param>
-        /// <returns>The Job object</returns>
-        public virtual Job Query(Job job, string zoneId = null, string contextId = null)
+		/// <summary>
+		/// Get a single Job
+		/// </summary>
+		/// <param name="job">The job template of the Job to fetch, must have name and id properties populated.</param>
+		/// <param name="zoneId">The zone in which to perform the request.</param>
+		/// <param name="contextId">The context in which to perform the request.</param>
+		/// <param name="webProxy">Provides the proxy settings if required</param>
+		/// <returns>The Job object</returns>
+		public virtual Job Query(Job job, string zoneId = null, string contextId = null, WebProxy webProxy = null)
         {
             checkRegistered();
 
@@ -262,7 +265,7 @@ namespace Sif.Framework.Consumers
             try
             {
                 string url = GetURLPrefix(job.Name) + "/" + job.Id + HttpUtils.MatrixParameters(zoneId, contextId);
-                string xml = HttpUtils.GetRequest(url, RegistrationService.AuthorisationToken, ServiceType.FUNCTIONAL);
+                string xml = HttpUtils.GetRequest(url, RegistrationService.AuthorisationToken, ServiceType.FUNCTIONAL, webProxy: webProxy);
                 if (log.IsDebugEnabled) log.Debug("XML from GET request ...");
                 if (log.IsDebugEnabled) log.Debug(xml);
                 return DeserialiseSingle<Job, jobType>(xml);
@@ -290,16 +293,17 @@ namespace Sif.Framework.Consumers
             return null;
         }
 
-        /// <summary>
-        /// Get a all Jobs
-        /// </summary>
-        /// <param name="jobName">The name of the job used to resolve the right functional service</param>
-        /// <param name="navigationPage">The page to fetch</param>
-        /// <param name="navigationPageSize">The number of items to fetch per page</param>
-        /// <param name="zoneId">The zone in which to operate</param>
-        /// <param name="contextId">The context in which to operate</param>
-        /// <returns>A page of Job objects</returns>
-        public virtual List<Job> Query(string jobName, uint? navigationPage = null, uint? navigationPageSize = null, string zoneId = null, string contextId = null)
+		/// <summary>
+		/// Get a all Jobs
+		/// </summary>
+		/// <param name="jobName">The name of the job used to resolve the right functional service</param>
+		/// <param name="navigationPage">The page to fetch</param>
+		/// <param name="navigationPageSize">The number of items to fetch per page</param>
+		/// <param name="zoneId">The zone in which to operate</param>
+		/// <param name="contextId">The context in which to operate</param>
+		/// <param name="webProxy">Provides the proxy settings if required</param>
+		/// <returns>A page of Job objects</returns>
+		public virtual List<Job> Query(string jobName, uint? navigationPage = null, uint? navigationPageSize = null, string zoneId = null, string contextId = null, WebProxy webProxy = null)
         {
             checkRegistered();
 
@@ -310,26 +314,27 @@ namespace Sif.Framework.Consumers
 
             if (navigationPage.HasValue && navigationPageSize.HasValue)
             {
-                xml = HttpUtils.GetRequest(url, RegistrationService.AuthorisationToken, ServiceType.FUNCTIONAL, (int)navigationPage, (int)navigationPageSize);
+                xml = HttpUtils.GetRequest(url, RegistrationService.AuthorisationToken, ServiceType.FUNCTIONAL, (int)navigationPage, (int)navigationPageSize, webProxy: webProxy);
             }
             else
             {
-                xml = HttpUtils.GetRequest(url, RegistrationService.AuthorisationToken, ServiceType.FUNCTIONAL);
+                xml = HttpUtils.GetRequest(url, RegistrationService.AuthorisationToken, ServiceType.FUNCTIONAL, webProxy: webProxy);
             }
 
             return DeserialiseMultiple<Job, jobType>(xml);
         }
 
-        /// <summary>
-        /// Get a all Jobs that match the example provided.
-        /// </summary>
-        /// <param name="job">The example object to match against</param>
-        /// <param name="navigationPage">The page to fetch</param>
-        /// <param name="navigationPageSize">The number of items to fetch per page</param>
-        /// <param name="zoneId">The zone in which to operate</param>
-        /// <param name="contextId">The context in which to operate</param>
-        /// <returns>A page of Job objects</returns>
-        public virtual List<Job> QueryByExample(Job job, uint? navigationPage = null, uint? navigationPageSize = null, string zoneId = null, string contextId = null)
+		/// <summary>
+		/// Get a all Jobs that match the example provided.
+		/// </summary>
+		/// <param name="job">The example object to match against</param>
+		/// <param name="navigationPage">The page to fetch</param>
+		/// <param name="navigationPageSize">The number of items to fetch per page</param>
+		/// <param name="zoneId">The zone in which to operate</param>
+		/// <param name="contextId">The context in which to operate</param>
+		/// <param name="webProxy">Provides the proxy settings if required</param>
+		/// <returns>A page of Job objects</returns>
+		public virtual List<Job> QueryByExample(Job job, uint? navigationPage = null, uint? navigationPageSize = null, string zoneId = null, string contextId = null, WebProxy webProxy = null)
         {
             checkRegistered();
 
@@ -338,7 +343,7 @@ namespace Sif.Framework.Consumers
             string url = GetURLPrefix(job.Name) + HttpUtils.MatrixParameters(zoneId, contextId);
             string body = SerialiseSingle<Job, jobType>(job);
             // TODO: Update PostRequest to accept paging parameters.
-            string xml = HttpUtils.PostRequest(url, RegistrationService.AuthorisationToken, body, ServiceType.FUNCTIONAL, "GET");
+            string xml = HttpUtils.PostRequest(url, RegistrationService.AuthorisationToken, body, ServiceType.FUNCTIONAL, "GET", webProxy: webProxy);
             if (log.IsDebugEnabled) log.Debug("XML from POST (Query by Example) request ...");
             if (log.IsDebugEnabled) log.Debug(xml);
 
@@ -376,32 +381,34 @@ namespace Sif.Framework.Consumers
             throw new HttpResponseException(HttpStatusCode.Forbidden);
         }
 
-        /// <summary>
-        /// Delete a Job
-        /// </summary>
-        /// <param name="job">The job template of the Job to delete, must have name and id populated.</param>
-        /// <param name="zoneId">The zone in which to perform the request.</param>
-        /// <param name="contextId">The context in which to perform the request.</param>
-        public virtual void Delete(Job job, string zoneId = null, string contextId = null)
+		/// <summary>
+		/// Delete a Job
+		/// </summary>
+		/// <param name="job">The job template of the Job to delete, must have name and id populated.</param>
+		/// <param name="zoneId">The zone in which to perform the request.</param>
+		/// <param name="contextId">The context in which to perform the request.</param>
+		/// <param name="webProxy">Provides the proxy settings if required</param>
+		public virtual void Delete(Job job, string zoneId = null, string contextId = null, WebProxy webProxy = null)
         {
             checkRegistered();
 
             checkJob(job, RightType.DELETE, zoneId);
 
             string url = GetURLPrefix(job.Name) + "/" + job.Id + HttpUtils.MatrixParameters(zoneId, contextId);
-            string xml = HttpUtils.DeleteRequest(url, RegistrationService.AuthorisationToken, ServiceType.FUNCTIONAL);
+            string xml = HttpUtils.DeleteRequest(url, RegistrationService.AuthorisationToken, ServiceType.FUNCTIONAL, webProxy: webProxy);
             if (log.IsDebugEnabled) log.Debug("XML from DELETE request ...");
             if (log.IsDebugEnabled) log.Debug(xml);
         }
 
-        /// <summary>
-        /// Delete a series of Job objects
-        /// </summary>
-        /// <param name="jobs">The job objtect templates of the Jobs to delete, each must have name and id populated. tHe name of all jobs must be the same.</param>
-        /// <param name="zoneId">The zone in which to perform the request.</param>
-        /// <param name="contextId">The context in which to perform the request.</param>
-        /// <returns>A response</returns>
-        public virtual MultipleDeleteResponse Delete(List<Job> jobs, string zoneId = null, string contextId = null)
+		/// <summary>
+		/// Delete a series of Job objects
+		/// </summary>
+		/// <param name="jobs">The job objtect templates of the Jobs to delete, each must have name and id populated. tHe name of all jobs must be the same.</param>
+		/// <param name="zoneId">The zone in which to perform the request.</param>
+		/// <param name="contextId">The context in which to perform the request.</param>
+		/// <param name="webProxy">Provides the proxy settings if required</param>
+		/// <returns>A response</returns>
+		public virtual MultipleDeleteResponse Delete(List<Job> jobs, string zoneId = null, string contextId = null, WebProxy webProxy = null)
         {
             checkRegistered();
 
@@ -417,7 +424,7 @@ namespace Sif.Framework.Consumers
             deleteRequestType request = new deleteRequestType { deletes = deleteIds.ToArray() };
             string url = GetURLPrefix(jobName) + HttpUtils.MatrixParameters(zoneId, contextId);
             string body = SerialiserFactory.GetXmlSerialiser<deleteRequestType>().Serialise(request);
-            string xml = HttpUtils.PutRequest(url, RegistrationService.AuthorisationToken, body, ServiceType.FUNCTIONAL, "DELETE");
+            string xml = HttpUtils.PutRequest(url, RegistrationService.AuthorisationToken, body, ServiceType.FUNCTIONAL, "DELETE", webProxy: webProxy);
             if (log.IsDebugEnabled) log.Debug("XML from PUT (DELETE) request ...");
             if (log.IsDebugEnabled) log.Debug(xml);
             deleteResponseType updateResponseType = SerialiserFactory.GetXmlSerialiser<deleteResponseType>().Deserialise(xml);
@@ -426,18 +433,19 @@ namespace Sif.Framework.Consumers
             return updateResponse;
         }
 
-        /// <summary>
-        /// Send a create operation to a specified phase on the specified job.
-        /// </summary>
-        /// <param name="job">The Job on which to execute the phase</param>
-        /// <param name="phaseName">The name of the phase</param>
-        /// <param name="body">The payload to send to the phase</param>
-        /// <param name="zoneId">The zone in which to operate</param>
-        /// <param name="contextId">The context in which to operate</param>
-        /// <param name="contentTypeOverride">The mime type of the data to be sent</param>
-        /// <param name="acceptOverride">The expected mime type of the result</param>
-        /// <returns>A string, possibly containing a serialized object, returned from the functional service</returns>
-        public virtual string CreateToPhase(Job job, string phaseName, string body = null, string zoneId = null, string contextId = null, string contentTypeOverride = null, string acceptOverride = null)
+		/// <summary>
+		/// Send a create operation to a specified phase on the specified job.
+		/// </summary>
+		/// <param name="job">The Job on which to execute the phase</param>
+		/// <param name="phaseName">The name of the phase</param>
+		/// <param name="body">The payload to send to the phase</param>
+		/// <param name="zoneId">The zone in which to operate</param>
+		/// <param name="contextId">The context in which to operate</param>
+		/// <param name="contentTypeOverride">The mime type of the data to be sent</param>
+		/// <param name="acceptOverride">The expected mime type of the result</param>
+		/// <param name="webProxy">Provides the proxy settings if required</param>
+		/// <returns>A string, possibly containing a serialized object, returned from the functional service</returns>
+		public virtual string CreateToPhase(Job job, string phaseName, string body = null, string zoneId = null, string contextId = null, string contentTypeOverride = null, string acceptOverride = null, WebProxy webProxy = null)
         {
             checkRegistered();
 
@@ -445,24 +453,25 @@ namespace Sif.Framework.Consumers
 
             string response = null;
             string url = GetURLPrefix(job.Name) + "/" + job.Id + "/" + phaseName + HttpUtils.MatrixParameters(zoneId, contextId);
-            response = HttpUtils.PostRequest(url, RegistrationService.AuthorisationToken, body, ServiceType.FUNCTIONAL, contentTypeOverride: contentTypeOverride, acceptOverride: acceptOverride);
+            response = HttpUtils.PostRequest(url, RegistrationService.AuthorisationToken, body, ServiceType.FUNCTIONAL, contentTypeOverride: contentTypeOverride, acceptOverride: acceptOverride, webProxy: webProxy);
             if (log.IsDebugEnabled) log.Debug("String from CREATE request to phase ...");
             if (log.IsDebugEnabled) log.Debug(response);
             return response;
         }
 
-        /// <summary>
-        /// Send a retrieve operation to a specified phase on the specified job.
-        /// </summary>
-        /// <param name="job">The Job on which to execute the phase</param>
-        /// <param name="phaseName">The name of the phase</param>
-        /// <param name="body">The payload to send to the phase</param>
-        /// <param name="zoneId">The zone in which to operate</param>
-        /// <param name="contextId">The context in which to operate</param>
-        /// <param name="contentTypeOverride">The mime type of the data to be sent</param>
-        /// <param name="acceptOverride">The expected mime type of the result</param>
-        /// <returns>A string, possibly containing a serialized object, returned from the functional service</returns>
-        public virtual string RetrieveToPhase(Job job, string phaseName, string body = null, string zoneId = null, string contextId = null, string contentTypeOverride = null, string acceptOverride = null)
+		/// <summary>
+		/// Send a retrieve operation to a specified phase on the specified job.
+		/// </summary>
+		/// <param name="job">The Job on which to execute the phase</param>
+		/// <param name="phaseName">The name of the phase</param>
+		/// <param name="body">The payload to send to the phase</param>
+		/// <param name="zoneId">The zone in which to operate</param>
+		/// <param name="contextId">The context in which to operate</param>
+		/// <param name="contentTypeOverride">The mime type of the data to be sent</param>
+		/// <param name="acceptOverride">The expected mime type of the result</param>
+		/// <param name="webProxy">Provides the proxy settings if required</param>
+		/// <returns>A string, possibly containing a serialized object, returned from the functional service</returns>
+		public virtual string RetrieveToPhase(Job job, string phaseName, string body = null, string zoneId = null, string contextId = null, string contentTypeOverride = null, string acceptOverride = null, WebProxy webProxy = null)
         {
             checkRegistered();
 
@@ -470,24 +479,25 @@ namespace Sif.Framework.Consumers
 
             string response = null;
             string url = GetURLPrefix(job.Name) + "/" + job.Id + "/" + phaseName + HttpUtils.MatrixParameters(zoneId, contextId);
-            response = HttpUtils.PostRequest(url, RegistrationService.AuthorisationToken, body, ServiceType.FUNCTIONAL, "GET", contentTypeOverride, acceptOverride);
+            response = HttpUtils.PostRequest(url, RegistrationService.AuthorisationToken, body, ServiceType.FUNCTIONAL, "GET", contentTypeOverride, acceptOverride, webProxy);
             if (log.IsDebugEnabled) log.Debug("String from GET request to phase ...");
             if (log.IsDebugEnabled) log.Debug(response);
             return response;
         }
 
-        /// <summary>
-        /// Send a update operation to a specified phase on the specified job.
-        /// </summary>
-        /// <param name="job">The Job on which to execute the phase</param>
-        /// <param name="phaseName">The name of the phase</param>
-        /// <param name="body">The payload to send to the phase</param>
-        /// <param name="zoneId">The zone in which to operate</param>
-        /// <param name="contextId">The context in which to operate</param>
-        /// <param name="contentTypeOverride">The mime type of the data to be sent</param>
-        /// <param name="acceptOverride">The expected mime type of the result</param>
-        /// <returns>A string, possibly containing a serialized object, returned from the functional service</returns>
-        public virtual string UpdateToPhase(Job job, string phaseName, string body, string zoneId = null, string contextId = null, string contentTypeOverride = null, string acceptOverride = null)
+		/// <summary>
+		/// Send a update operation to a specified phase on the specified job.
+		/// </summary>
+		/// <param name="job">The Job on which to execute the phase</param>
+		/// <param name="phaseName">The name of the phase</param>
+		/// <param name="body">The payload to send to the phase</param>
+		/// <param name="zoneId">The zone in which to operate</param>
+		/// <param name="contextId">The context in which to operate</param>
+		/// <param name="contentTypeOverride">The mime type of the data to be sent</param>
+		/// <param name="acceptOverride">The expected mime type of the result</param>
+		/// <param name="webProxy">Provides the proxy settings if required</param>
+		/// <returns>A string, possibly containing a serialized object, returned from the functional service</returns>
+		public virtual string UpdateToPhase(Job job, string phaseName, string body, string zoneId = null, string contextId = null, string contentTypeOverride = null, string acceptOverride = null, WebProxy webProxy = null)
         {
             checkRegistered();
 
@@ -495,24 +505,25 @@ namespace Sif.Framework.Consumers
             
             string response = null;
             string url = GetURLPrefix(job.Name) + "/" + job.Id + "/" + phaseName + HttpUtils.MatrixParameters(zoneId, contextId);
-            response = HttpUtils.PutRequest(url, RegistrationService.AuthorisationToken, body, ServiceType.FUNCTIONAL, contentTypeOverride: contentTypeOverride, acceptOverride: acceptOverride);
+            response = HttpUtils.PutRequest(url, RegistrationService.AuthorisationToken, body, ServiceType.FUNCTIONAL, contentTypeOverride: contentTypeOverride, acceptOverride: acceptOverride, webProxy: webProxy);
             if (log.IsDebugEnabled) log.Debug("String from PUT request to phase ...");
             if (log.IsDebugEnabled) log.Debug(response);
             return response;
         }
 
-        /// <summary>
-        /// Send a delete operation to a specified phase on the specified job.
-        /// </summary>
-        /// <param name="job">The Job on which to execute the phase</param>
-        /// <param name="phaseName">The name of the phase</param>
-        /// <param name="body">The payload to send to the phase</param>
-        /// <param name="zoneId">The zone in which to operate</param>
-        /// <param name="contextId">The context in which to operate</param>
-        /// <param name="contentTypeOverride">The mime type of the data to be sent</param>
-        /// <param name="acceptOverride">The expected mime type of the result</param>
-        /// <returns>A string, possibly containing a serialized object, returned from the functional service</returns>
-        public virtual string DeleteToPhase(Job job, string phaseName, string body, string zoneId = null, string contextId = null, string contentTypeOverride = null, string acceptOverride = null)
+		/// <summary>
+		/// Send a delete operation to a specified phase on the specified job.
+		/// </summary>
+		/// <param name="job">The Job on which to execute the phase</param>
+		/// <param name="phaseName">The name of the phase</param>
+		/// <param name="body">The payload to send to the phase</param>
+		/// <param name="zoneId">The zone in which to operate</param>
+		/// <param name="contextId">The context in which to operate</param>
+		/// <param name="contentTypeOverride">The mime type of the data to be sent</param>
+		/// <param name="acceptOverride">The expected mime type of the result</param>
+		/// <param name="webProxy">Provides the proxy settings if required</param>
+		/// <returns>A string, possibly containing a serialized object, returned from the functional service</returns>
+		public virtual string DeleteToPhase(Job job, string phaseName, string body, string zoneId = null, string contextId = null, string contentTypeOverride = null, string acceptOverride = null, WebProxy webProxy = null)
         {
             checkRegistered();
 
@@ -520,22 +531,23 @@ namespace Sif.Framework.Consumers
             
             string response = null;
             string url = GetURLPrefix(job.Name) + "/" + job.Id + "/" + phaseName + HttpUtils.MatrixParameters(zoneId, contextId);
-            response = HttpUtils.DeleteRequest(url, RegistrationService.AuthorisationToken, body, ServiceType.FUNCTIONAL, contentTypeOverride, acceptOverride);
+            response = HttpUtils.DeleteRequest(url, RegistrationService.AuthorisationToken, body, ServiceType.FUNCTIONAL, contentTypeOverride, acceptOverride, webProxy);
             if (log.IsDebugEnabled) log.Debug("String from DELETE request to phase ...");
             if (log.IsDebugEnabled) log.Debug(response);
             return response;
         }
 
-        /// <summary>
-        /// Send a create operation to  the state of the specified phase on the specified job.
-        /// </summary>
-        /// <param name="job">The Job on which to operate</param>
-        /// <param name="phaseName">The name of the phase whose state is to change</param>
-        /// <param name="item">The PhaseState instance template</param>
-        /// <param name="zoneId">The zone in which to perform the request.</param>
-        /// <param name="contextId">The context in which to perform the request.</param>
-        /// <returns>The current state of the phase.</returns>
-        public virtual PhaseState CreateToState(Job job, string phaseName, PhaseState item, string zoneId = null, string contextId = null)
+		/// <summary>
+		/// Send a create operation to  the state of the specified phase on the specified job.
+		/// </summary>
+		/// <param name="job">The Job on which to operate</param>
+		/// <param name="phaseName">The name of the phase whose state is to change</param>
+		/// <param name="item">The PhaseState instance template</param>
+		/// <param name="zoneId">The zone in which to perform the request.</param>
+		/// <param name="contextId">The context in which to perform the request.</param>
+		/// <param name="webProxy">Provides the proxy settings if required</param>
+		/// <returns>The current state of the phase.</returns>
+		public virtual PhaseState CreateToState(Job job, string phaseName, PhaseState item, string zoneId = null, string contextId = null, WebProxy webProxy = null)
         {
             checkRegistered();
 
@@ -543,7 +555,7 @@ namespace Sif.Framework.Consumers
 
             string url = GetURLPrefix(job.Name) + "/" + job.Id + "/" + phaseName + "/states/state" + HttpUtils.MatrixParameters(zoneId, contextId);
             string body = SerialiseSingle<PhaseState, stateType>(item);
-            string xml = HttpUtils.PostRequest(url, RegistrationService.AuthorisationToken, body, ServiceType.FUNCTIONAL);
+            string xml = HttpUtils.PostRequest(url, RegistrationService.AuthorisationToken, body, ServiceType.FUNCTIONAL, webProxy: webProxy);
             if (log.IsDebugEnabled) log.Debug("Guid from CREATE request to state on phase ...");
             if (log.IsDebugEnabled) log.Debug(xml);
             return DeserialiseSingle<PhaseState, stateType>(xml);

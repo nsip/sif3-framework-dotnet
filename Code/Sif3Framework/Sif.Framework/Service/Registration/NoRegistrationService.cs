@@ -15,6 +15,7 @@
  */
 
 using Sif.Framework.Model.Authentication;
+using System.Net;
 using Environment = Sif.Framework.Model.Infrastructure.Environment;
 
 namespace Sif.Framework.Service.Registration
@@ -46,27 +47,27 @@ namespace Sif.Framework.Service.Registration
         }
 
         /// <summary>
-        /// <see cref="IRegistrationService.Register()">Register</see>
+        /// <see cref="IRegistrationService.Register(WebProxy)">Register</see>
         /// </summary>
-        public Environment Register()
+        public Environment Register(WebProxy webProxy = null)
         {
             Registered = true;
             return null;
         }
 
         /// <summary>
-        /// <see cref="IRegistrationService.Register(ref Environment)">Register</see>
+        /// <see cref="IRegistrationService.Register(ref Environment, WebProxy)">Register</see>
         /// </summary>
-        public Environment Register(ref Environment environment)
+        public Environment Register(ref Environment environment, WebProxy webProxy = null)
         {
             Registered = true;
             return null;
         }
 
         /// <summary>
-        /// <see cref="IRegistrationService.Unregister(bool?)">Unregister</see>
+        /// <see cref="IRegistrationService.Unregister(bool?, WebProxy)">Unregister</see>
         /// </summary>
-        public void Unregister(bool? deleteOnUnregister = null)
+        public void Unregister(bool? deleteOnUnregister = null, WebProxy webProxy = null)
         {
             Registered = false;
         }

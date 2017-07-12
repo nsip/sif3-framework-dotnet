@@ -57,8 +57,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NHibernate.4.0.1.4000\lib\net40\NHibernate.dll</HintPath>
     </Reference>
-    <Reference Include="Sif.Specification.Infrastructure">
-      <HintPath>..\..\..\SharedLibs\Sif.Specification.Infrastructure 3.2.0\Sif.Specification.Infrastructure.dll</HintPath>
+    <Reference Include="Sif.Specification.Infrastructure, Version=3.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\SharedLibs\Sif.Specification.Infrastructure 3.2.1\Sif.Specification.Infrastructure.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -86,6 +87,10 @@
   <ItemGroup>
     <Compile Include="Consumers\FunctionalServiceConsumer.cs" />
     <Compile Include="Consumers\IBasicConsumer.cs" />
+    <Compile Include="Model\Authentication\AuthenticationMethod.cs" />
+    <Compile Include="Model\Authentication\AuthorisationToken.cs" />
+    <Compile Include="Model\Exceptions\InvalidAuthorisationTokenException.cs" />
+    <Compile Include="Model\Infrastructure\Initialization.cs" />
     <Compile Include="Model\Infrastructure\SifObjectBinding.cs" />
     <Compile Include="Providers\FunctionalServiceProvider.cs" />
     <Compile Include="Model\DataModels\ServiceClassInfo.cs" />
@@ -155,8 +160,10 @@
     <Compile Include="Providers\BasicProvider.cs" />
     <Compile Include="Providers\Provider.cs" />
     <Compile Include="Providers\FunctionalServiceProviderFactory.cs" />
+    <Compile Include="Service\Authentication\BasicAuthorisationTokenService.cs" />
     <Compile Include="Service\Authentication\BrokeredAuthenticationService.cs" />
     <Compile Include="Service\Authentication\AuthenticationService.cs" />
+    <Compile Include="Service\Authentication\HmacShaAuthorisationTokenService.cs" />
     <Compile Include="Service\Authentication\IAuthenticationService.cs" />
     <Compile Include="Service\Authentication\DirectAuthenticationService.cs" />
     <Compile Include="Model\Settings\ConsumerSection.cs" />
@@ -165,6 +172,7 @@
     <Compile Include="Model\Settings\ProviderSection.cs" />
     <Compile Include="Model\Settings\SessionElement.cs" />
     <Compile Include="Model\Settings\SessionsElementCollection.cs" />
+    <Compile Include="Service\Authentication\IAuthorisationTokenService.cs" />
     <Compile Include="Service\Functional\FunctionalService.cs" />
     <Compile Include="Service\Functional\PhaseActions.cs" />
     <Compile Include="Service\Functional\IPhaseActions.cs" />
@@ -174,8 +182,10 @@
     <Compile Include="Service\Infrastructure\EnvironmentService.cs" />
     <Compile Include="Service\IService.cs" />
     <Compile Include="Service\Providers\IBasicProviderService.cs" />
+    <Compile Include="Service\Providers\IChangesSinceService.cs" />
     <Compile Include="Service\Providers\IProviderService.cs" />
     <Compile Include="Service\IObjectService.cs" />
+    <Compile Include="Service\Providers\ISupportsChangesSince.cs" />
     <Compile Include="Service\Registration\IRegistrationService.cs" />
     <Compile Include="Service\Registration\NoRegistrationService.cs" />
     <Compile Include="Service\Registration\RegistrationService.cs" />
@@ -187,6 +197,8 @@
     <Compile Include="Utils\RightsUtils.cs" />
     <Compile Include="Utils\ZoneUtils.cs" />
     <Compile Include="Utils\ProviderUtils.cs" />
+    <Compile Include="WebApi\ActionResults\CustomHeaderResult.cs" />
+    <Compile Include="WebApi\ActionResults\EmptyContentResult.cs" />
     <Compile Include="WebApi\ControllerSelectors\ServiceProviderHttpControllerSelector.cs" />
     <Compile Include="WebApi\MethodOverrideHandler.cs" />
     <Compile Include="Utils\RegistrationManager.cs" />

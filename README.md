@@ -1,4 +1,4 @@
-> Copyright 2016 Systemic Pty Ltd
+> Copyright 2017 Systemic Pty Ltd
 > 
 > Licensed under the Apache License, Version 2.0 (the "License");
 > you may not use this file except in compliance with the License.
@@ -18,15 +18,12 @@ The SIF3 Framework is a .NET framework that enables developers to efficiently im
 
 The framework includes a demo Solution that illustrates how to use it.
 
-    NOTE: This current release is a Beta version that should only be used for inspection and prototyping. It is still
-    a work in progress and not intended for commercial use as yet.
-
 ### Contributing to this framework
 
 See the [wiki associated with this repository](https://github.com/Access4Learning/sif3-framework-dotnet/wiki) for information on: 
 
 * contributing to this framework 
-* the Java coding style to be used and
+* the coding style to be used and
 * the structure of the SIF 3 Framework repositories
 
 ###Download Instructions
@@ -294,7 +291,7 @@ To get started using this framework, read the *Sif3Framework .NET Developer's Gu
 - Added scripts to lauch projects from the command line
 - Added scripts to build projects from the command line
 
-**July ??, 2016 - ?.?.? Added demo projects for connecting to HITS**
+**Jan 06, 2017 - 3.1.0 Implement payload compression and Changes Since**
 
 - Added a new demo project specifically for connecting to HITS.
 - Moved HITS specific Consumers from the demo.au.consumer project to the demo.hits.consumer project.
@@ -303,3 +300,29 @@ To get started using this framework, read the *Sif3Framework .NET Developer's Gu
 - Removed SharedLibs/Sif.Framework 1.2.0 as that version was never released.
 - Fixed issue whereby SharedLibs/Sif.Framework 2.0.0 incorrectly contained version 3.0.0 of the framework.
 - Implemented message payload compression.
+- Implemented Changes Since mechanism.
+
+**Apr 30, 2017 - 3.2.0 Updated to SIF Infrastructure 3.2.0**
+
+- Fixed issue with incorrectly named matrix parameters (zone to zoneId, context to contextId).
+- Completed and fixed SIF_HMACSHA256 authentication implementation.
+- Updated the SIF Framework to use the latest version of the SIF Infrastructure (3.2.0).
+- Fixed a namespace issue with the implementation of the SIF AU Data Model (3.4.0).
+- Implemented the serviceType header (with a value of FUNCTIONAL) for Functional Service calls.
+- Updated the SIF Framework to look for the SifFramework.config file in the current path first and the application folder second.
+
+**May 03, 2017 - 3.2.1 Updated to SIF Infrastructure 3.2.1, AU Data Model 3.4.1**
+
+- Updated the SIF Framework to use the latest version of the SIF Infrastructure (3.2.1).
+- Updated the SIF Framework to use the latest version of the SIF AU Data Model (3.4.1).
+- Implemented the Initialization object for Functional Service Jobs.
+
+**June 10, 2017 - 3.2.1.1 Applied updates to AU Data Model 3.4.1**
+
+- Updated the SIF Framework to use the officially approved version of the SIF AU Data Model (3.4.1).
+- Fixed namespace issues with SIF AU Data Model usage in the demo projects.
+- Updated the "Connecting Consumers to HITS" document to reflect recent updates to the HITS Dashboard and its usage.
+
+**June 15, 2017 - 3.2.1.2 Updated to use strict version of AU Data Model 3.4.1**
+
+- Updated the SIF Framework to use the "strict" version of the SIF AU Data Model (3.4.1).

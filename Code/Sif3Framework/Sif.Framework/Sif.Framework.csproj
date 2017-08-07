@@ -178,6 +178,7 @@
     <Compile Include="Service\Infrastructure\EnvironmentRegisterService.cs" />
     <Compile Include="Service\Infrastructure\EnvironmentService.cs" />
     <Compile Include="Service\IService.cs" />
+    <Compile Include="Service\Providers\ChangesSinceResponse.cs" />
     <Compile Include="Service\Providers\IBasicProviderService.cs" />
     <Compile Include="Service\Providers\IChangesSinceService.cs" />
     <Compile Include="Service\Providers\IProviderService.cs" />

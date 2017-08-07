@@ -16,17 +16,9 @@
 
 namespace Sif.Framework.Service.Providers
 {
-
-    /// <summary>
-    /// This interface defines operations associated with the "Changes Since" mechanism.
-    /// </summary>
-    public interface ISupportsChangesSince
+    public class ChangesSinceResponse<TMultiple>
     {
-
-        /// <summary>
-        /// Get the current Changes Since marker.
-        /// </summary>
-        /// <returns>Changes Since marker.</returns>
-        string ChangesSinceMarker { get; }
+        public TMultiple Objects { get; set; }
+        public string NextChangesSinceMarker { get; set; }
     }
 }

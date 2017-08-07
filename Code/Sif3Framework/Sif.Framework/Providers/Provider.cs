@@ -307,15 +307,15 @@ namespace Sif.Framework.Providers
             }
 
             IHttpActionResult result;
-            TMultiple objs = changesSinceService.RetrieveChangesSince(changesSinceMarker, navigationPage, navigationPageSize, requestedZone, requestedContext);
+            ChangesSinceResponse<TMultiple> response = changesSinceService.RetrieveChangesSince(changesSinceMarker, navigationPage, navigationPageSize, requestedZone, requestedContext);
 
-            if (objs == null)
+            if (response == null || response.Objects == null)
             {
                 result = StatusCode(HttpStatusCode.NoContent);
             }
             else
             {
-                result = Ok(objs);
+                result = Ok(response.Objects);
             }
 
             bool pagedRequest = navigationPage.HasValue && navigationPageSize.HasValue;
@@ -327,7 +327,7 @@ namespace Sif.Framework.Providers
 
                 try
                 {
-                    result = result.AddHeader("changesSinceMarker", changesSinceService.NextChangesSinceMarker ?? string.Empty);
+                    result = result.AddHeader("changesSinceMarker", response?.NextChangesSinceMarker ?? string.Empty);
                 }
                 catch (Exception)
                 {

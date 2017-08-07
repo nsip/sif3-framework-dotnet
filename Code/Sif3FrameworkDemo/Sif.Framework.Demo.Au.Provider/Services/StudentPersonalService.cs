@@ -33,23 +33,12 @@ namespace Sif.Framework.Demo.Au.Provider.Services
         private static Random random = new Random();
         private static IDictionary<string, StudentPersonal> studentsCache = new Dictionary<string, StudentPersonal>();
         private static IDictionary<string, IDictionary<string, StudentPersonal>> studentsChangedCache = new Dictionary<string, IDictionary<string, StudentPersonal>>();
-
+        
         public string ChangesSinceMarker
         {
 
             get
             {
-                return string.Format("{0}{1}", changesSincePrefix, changesSinceNumber);
-            }
-
-        }
-
-        public string NextChangesSinceMarker
-        {
-
-            get
-            {
-                changesSinceNumber++;
                 return string.Format("{0}{1}", changesSincePrefix, changesSinceNumber);
             }
 
@@ -203,7 +192,7 @@ namespace Sif.Framework.Demo.Au.Provider.Services
             return students;
         }
 
-        public List<StudentPersonal> RetrieveChangesSince(string changesSinceMarker, uint? pageIndex = null, uint? pageSize = null, string zoneId = null, string contextId = null)
+        public ChangesSinceResponse<List<StudentPersonal>> RetrieveChangesSince(string changesSinceMarker, uint? pageIndex = default(uint?), uint? pageSize = default(uint?), string zoneId = null, string contextId = null)
         {
 
             if (string.IsNullOrEmpty(changesSinceMarker))
@@ -218,7 +207,13 @@ namespace Sif.Framework.Demo.Au.Provider.Services
                 students = new Dictionary<string, StudentPersonal>();
             }
 
-            return new List<StudentPersonal>(students.Values);
+            changesSinceNumber++;
+            var response = new ChangesSinceResponse<List<StudentPersonal>>()
+            {
+                Objects = new List<StudentPersonal>(students.Values),
+                NextChangesSinceMarker = string.Format("{0}{1}", changesSincePrefix, changesSinceNumber)
+            };
+            return response;
         }
 
         public void Update(StudentPersonal obj, string zoneId = null, string contextId = null)
@@ -236,7 +231,6 @@ namespace Sif.Framework.Demo.Au.Provider.Services
         {
             studentsCache.Remove(refId);
         }
-
     }
 
 }

@@ -43,8 +43,8 @@ namespace Sif.Framework.Service.Providers
         /// <exception cref="System.ArgumentException">One or more parameters are invalid.</exception>
         /// <exception cref="Model.Exceptions.ContentTooLargeException">Too many objects to return.</exception>
         /// <exception cref="Model.Exceptions.QueryException">Error retrieving objects.</exception>
-        /// <returns>Retrieved objects.</returns>
-        TMultiple RetrieveChangesSince(string changesSinceMarker, uint? pageIndex = null, uint? pageSize = null, string zoneId = null, string contextId = null);
+        /// <returns>Retrieved objects including the new changes since marker.</returns>
+        ChangesSinceResponse<TMultiple> RetrieveChangesSince(string changesSinceMarker, uint? pageIndex = null, uint? pageSize = null, string zoneId = null, string contextId = null);
 
     }
 

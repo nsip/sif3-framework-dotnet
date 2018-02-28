@@ -1,4 +1,4 @@
-> Copyright 2017 Systemic Pty Ltd
+> Copyright 2018 Systemic Pty Ltd
 > 
 > Licensed under the Apache License, Version 2.0 (the "License");
 > you may not use this file except in compliance with the License.
@@ -326,3 +326,47 @@ To get started using this framework, read the *Sif3Framework .NET Developer's Gu
 **June 15, 2017 - 3.2.1.2 Updated to use strict version of AU Data Model 3.4.1**
 
 - Updated the SIF Framework to use the "strict" version of the SIF AU Data Model (3.4.1).
+
+**July 28, 2017 - 3.2.1.3 Resolve issues with mustUseAdvisory implementation**
+
+- Incorporate slf4net into the framework to enable the ability to choose different logging libraries.
+- Fix an issue with the SIF Specification 3.2.1 namespace in unit testing.
+- Updated to the latest version of AutoMapper.
+- Fix demo Provider run scripts to take into consideration pre-Visual Studio 2015 development environments.
+- Update the logic associated with the mustUseAdvisory flag in Providers.
+- Added a mustUseAdvisory parameter to the Create() methods for Consumers.
+
+**Sept 05, 2017 - 3.2.1.4 Implement Provider SIF Events**
+
+- Added a draft version of SIF AU Data Model 3.4.2.
+- Implemented the broadcasting of SIF Events from a Provider.
+- Enhanced the SIF Framework to work with TLS 1.2.
+
+**Nov 06, 2017 - 3.2.1.4 Applied updates to AU Data Model 3.4.2**
+
+- Updated the SIF Framework to use the officially approved version of the SIF AU Data Model 3.4.2 (no SIF Framework version update).
+
+**Nov 23, 2017 - 3.2.1.4 Applied updates to AU Data Model 3.4.2**
+
+- Updated the SIF Framework to use the latest version of the SIF AU Data Model 3.4.2 (no SIF Framework version update).
+
+**Dec 04, 2017 - 3.2.1.5 Minor code changes highlighted during training**
+
+- Enable paging of results from a Query By Service Path call.
+- Fixed an issue in the authentication service so that the correct HTTP status code is returned.
+- Updated and improved documentation after feedback from a training course.
+
+**Jan 21, 2018 - 3.2.1.6 Implement Consumer SIF Events**
+
+- Implemented the subscribing of SIF Events from an Event Consumer.
+- Provided a correct implementation of ACL validation in Providers.
+
+**Feb 19, 2018 - 3.2.1.7 Resolve issues with Event Consumer**
+
+- Fix issues with Event Consumer start up.
+- Improve exception management with the registration process.
+- Fix ACL issues with the UK and US Demo projects.
+
+**Feb 25, 2018 - 3.2.1.8 Resolve issues with SIF Events**
+
+- Fix issues with SIF Events for both Providers and Consumers.

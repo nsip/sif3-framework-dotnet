@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Systemic Pty Ltd")]
 [assembly: AssemblyProduct("Sif.Framework")]
-[assembly: AssemblyCopyright("Copyright © Systemic Pty Ltd 2017")]
+[assembly: AssemblyCopyright("Copyright © Systemic Pty Ltd 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,11 +32,8 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("3.2.1.0")]
-[assembly: AssemblyFileVersion("3.2.1.0")]
-
-// Configure log4net using the .config file
-[assembly: log4net.Config.XmlConfigurator(Watch = true)]
+[assembly: AssemblyVersion("3.2.1.8")]
+[assembly: AssemblyFileVersion("3.2.1.8")]
 
 // Make types and members with internal scope visible to the assembly containing unit tests.
-[assembly: InternalsVisibleToAttribute("Sif.Framework.Tests")]
+[assembly: InternalsVisibleTo("Sif.Framework.Tests")]

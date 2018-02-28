@@ -21,11 +21,12 @@ using Sif.Framework.Service.Providers;
 using Sif.Specification.DataModel.Au;
 using System;
 using System.Collections.Generic;
+using Sif.Framework.Model.Events;
 
 namespace Sif.Framework.Demo.Au.Provider.Services
 {
 
-    public class StudentPersonalService : IBasicProviderService<StudentPersonal>, IChangesSinceService<List<StudentPersonal>>
+    public class StudentPersonalService : IBasicProviderService<StudentPersonal>, IChangesSinceService<List<StudentPersonal>>, IEventService<List<StudentPersonal>>
     {
         private const string changesSincePrefix = "ver.";
 
@@ -115,9 +116,14 @@ namespace Sif.Framework.Demo.Au.Provider.Services
 
         public StudentPersonal Create(StudentPersonal obj, bool? mustUseAdvisory = null, string zoneId = null, string contextId = null)
         {
-            string refId = Guid.NewGuid().ToString();
-            obj.RefId = refId;
-            studentsCache.Add(refId, obj);
+
+            if (!mustUseAdvisory.HasValue || !mustUseAdvisory.Value)
+            {
+                string refId = Guid.NewGuid().ToString();
+                obj.RefId = refId;
+            }
+
+            studentsCache.Add(obj.RefId, obj);
 
             return obj;
         }
@@ -230,6 +236,11 @@ namespace Sif.Framework.Demo.Au.Provider.Services
         public void Delete(string refId, string zoneId = null, string contextId = null)
         {
             studentsCache.Remove(refId);
+        }
+
+        public IEventIterator<List<StudentPersonal>> GetEventIterator(string zoneId = null, string contextId = null)
+        {
+            return new StudentPersonalIterator();
         }
 
     }

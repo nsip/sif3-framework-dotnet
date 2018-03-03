@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2017 Systemic Pty Ltd
+ * Copyright 2018 Systemic Pty Ltd
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,22 +16,23 @@
 
 using Sif.Framework.Model.Exceptions;
 using Sif.Framework.Model.Infrastructure;
+using Sif.Framework.Persistence;
 using Sif.Framework.Persistence.NHibernate;
 using Sif.Framework.Service.Mapper;
 using Sif.Framework.Utils;
 using Sif.Specification.Infrastructure;
 using System;
 using System.Collections.Generic;
-using Environment = Sif.Framework.Model.Infrastructure.Environment;
 
 namespace Sif.Framework.Service.Infrastructure
 {
 
     /// <summary>
-    /// Service class for Environment objects.
+    /// Service class for the Environment type.
     /// </summary>
-    public class EnvironmentService : SifService<environmentType, Environment>, IEnvironmentService
+    public class EnvironmentService : SifService<environmentType, Model.Infrastructure.Environment>, IEnvironmentService
     {
+        private readonly IEnvironmentRegisterService environmentRegisterService;
 
         /// <summary>
         /// Create a copy of a Zone object.
@@ -197,11 +198,13 @@ namespace Sif.Framework.Service.Infrastructure
         }
 
         /// <summary>
-        /// Create a default instance.
+        /// Create an instance of this service class.
         /// </summary>
-        public EnvironmentService()
-            : base(new EnvironmentRepository())
+        /// <param name="repository">Environment repository.</param>
+        /// <param name="environmentRegisterService">Environment Register service.</param>
+        public EnvironmentService(IEnvironmentRepository repository, IEnvironmentRegisterService environmentRegisterService) : base(repository)
         {
+            this.environmentRegisterService = environmentRegisterService;
         }
 
         /// <summary>
@@ -210,7 +213,7 @@ namespace Sif.Framework.Service.Infrastructure
         public override Guid Create(environmentType item, string zoneId = null, string contextId = null)
         {
             EnvironmentRegister environmentRegister =
-                (new EnvironmentRegisterService()).RetrieveByUniqueIdentifiers
+                environmentRegisterService.RetrieveByUniqueIdentifiers
                     (item.applicationInfo.applicationKey, item.instanceId, item.userToken, item.solutionId);
 
             if (environmentRegister == null)
@@ -233,7 +236,7 @@ namespace Sif.Framework.Service.Infrastructure
 
             IDictionary<InfrastructureServiceNames, InfrastructureService> infrastructureServices = CopyInfrastructureServices(environmentRegister.InfrastructureServices);
             IDictionary<string, ProvisionedZone> provisionedZones = CopyProvisionedZones(environmentRegister.ProvisionedZones);
-            Environment repoItem = MapperFactory.CreateInstance<environmentType, Environment>(item);
+            Model.Infrastructure.Environment repoItem = MapperFactory.CreateInstance<environmentType, Model.Infrastructure.Environment>(item);
 
             if (environmentRegister.DefaultZone != null)
             {
@@ -273,8 +276,8 @@ namespace Sif.Framework.Service.Infrastructure
         /// </summary>
         public virtual environmentType RetrieveBySessionToken(string sessionToken)
         {
-            Environment environment = ((EnvironmentRepository)repository).RetrieveBySessionToken(sessionToken);
-            return MapperFactory.CreateInstance<Environment, environmentType>(environment);
+            Model.Infrastructure.Environment environment = ((EnvironmentRepository)repository).RetrieveBySessionToken(sessionToken);
+            return MapperFactory.CreateInstance<Model.Infrastructure.Environment, environmentType>(environment);
         }
 
     }

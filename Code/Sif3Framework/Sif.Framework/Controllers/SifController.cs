@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2017 Systemic Pty Ltd
+ * Copyright 2018 Systemic Pty Ltd
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 using Sif.Framework.Model.Persistence;
 using Sif.Framework.Service;
 using Sif.Framework.Service.Authentication;
-using Sif.Framework.Service.Infrastructure;
 using Sif.Framework.WebApi.ModelBinders;
 using System;
 using System.Collections.Generic;
@@ -41,7 +40,7 @@ namespace Sif.Framework.Controllers
         /// <summary>
         /// Authentication service.
         /// </summary>
-        protected IAuthenticationService authService;
+        protected IAuthenticationService authenticationService;
 
         /// <summary>
         /// Service for SIF Object operations.
@@ -49,13 +48,14 @@ namespace Sif.Framework.Controllers
         protected ISifService<UI, DB> service;
 
         /// <summary>
-        /// Create an instance.
+        /// Create an instance of this Controller.
         /// </summary>
+        /// <param name="authenticationService">Authentication service.</param>
         /// <param name="service">Service used for managing conversion between the object types.</param>
-        public SifController(ISifService<UI, DB> service)
+        public SifController(IAuthenticationService authenticationService, ISifService<UI, DB> service)
         {
+            this.authenticationService = authenticationService;
             this.service = service;
-            authService = new DirectAuthenticationService(new ApplicationRegisterService(), new EnvironmentService());
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace Sif.Framework.Controllers
         public virtual void Delete(Guid id, [MatrixParameter] string[] zoneId = null, [MatrixParameter] string[] contextId = null)
         {
 
-            if (!authService.VerifyAuthenticationHeader(Request.Headers))
+            if (!authenticationService.VerifyAuthenticationHeader(Request.Headers))
             {
                 throw new HttpResponseException(HttpStatusCode.Unauthorized);
             }
@@ -104,7 +104,7 @@ namespace Sif.Framework.Controllers
         public virtual UI Get(Guid id, [MatrixParameter] string[] zoneId = null, [MatrixParameter] string[] contextId = null)
         {
 
-            if (!authService.VerifyAuthenticationHeader(Request.Headers))
+            if (!authenticationService.VerifyAuthenticationHeader(Request.Headers))
             {
                 throw new HttpResponseException(HttpStatusCode.Unauthorized);
             }
@@ -136,7 +136,7 @@ namespace Sif.Framework.Controllers
         public virtual ICollection<UI> Get([MatrixParameter] string[] zoneId = null, [MatrixParameter] string[] contextId = null)
         {
 
-            if (!authService.VerifyAuthenticationHeader(Request.Headers))
+            if (!authenticationService.VerifyAuthenticationHeader(Request.Headers))
             {
                 throw new HttpResponseException(HttpStatusCode.Unauthorized);
             }
@@ -166,11 +166,11 @@ namespace Sif.Framework.Controllers
         public virtual HttpResponseMessage Post(UI item, [MatrixParameter] string[] zoneId = null, [MatrixParameter] string[] contextId = null)
         {
 
-            if (!authService.VerifyAuthenticationHeader(Request.Headers))
+            if (!authenticationService.VerifyAuthenticationHeader(Request.Headers))
             {
                 throw new HttpResponseException(HttpStatusCode.Unauthorized);
             }
-            
+
             HttpResponseMessage responseMessage = null;
 
             try
@@ -200,7 +200,7 @@ namespace Sif.Framework.Controllers
         public virtual void Put(Guid id, UI item, [MatrixParameter] string[] zoneId = null, [MatrixParameter] string[] contextId = null)
         {
 
-            if (!authService.VerifyAuthenticationHeader(Request.Headers))
+            if (!authenticationService.VerifyAuthenticationHeader(Request.Headers))
             {
                 throw new HttpResponseException(HttpStatusCode.Unauthorized);
             }

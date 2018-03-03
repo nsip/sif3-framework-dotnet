@@ -1,6 +1,6 @@
 ﻿/*
  * Crown Copyright © Department for Education (UK) 2016
- * Copyright 2017 Systemic Pty Ltd
+ * Copyright 2018 Systemic Pty Ltd
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ using Sif.Framework.Model.Infrastructure;
 using Sif.Framework.Service;
 using Sif.Framework.Service.Authentication;
 using Sif.Framework.Service.Functional;
-using Sif.Framework.Service.Infrastructure;
 using Sif.Framework.Utils;
 using Sif.Framework.WebApi.ModelBinders;
 using Sif.Specification.Infrastructure;
@@ -31,7 +30,6 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Web.Http;
-using Environment = Sif.Framework.Model.Infrastructure.Environment;
 
 namespace Sif.Framework.Providers
 {
@@ -47,21 +45,15 @@ namespace Sif.Framework.Providers
         /// <summary>
         /// Authentication (BROKERED or DIRECT) service against which requests will be checked.
         /// </summary>
-        protected IAuthenticationService authService;
+        protected IAuthenticationService authenticationService;
 
         /// <summary>
-        /// Create an instance.
+        /// Create an instance of this Provider.
         /// </summary>
-        public FunctionalServiceProvider()
+        /// <param name="authenticationService">Authentication service.</param>
+        public FunctionalServiceProvider(IAuthenticationService authenticationService)
         {
-            if (EnvironmentType.DIRECT.Equals(SettingsManager.ProviderSettings.EnvironmentType))
-            {
-                authService = new DirectAuthenticationService(new ApplicationRegisterService(), new EnvironmentService());
-            }
-            else if (EnvironmentType.BROKERED.Equals(SettingsManager.ProviderSettings.EnvironmentType))
-            {
-                authService = new BrokeredAuthenticationService(new ApplicationRegisterService(), new EnvironmentService());
-            }
+            this.authenticationService = authenticationService;
         }
 
         /*-------------------*/
@@ -667,7 +659,7 @@ namespace Sif.Framework.Providers
         protected virtual string CheckAuthorisation(string[] zoneId, string[] contextId)
         {
             string sessionToken = "";
-            if (!authService.VerifyAuthenticationHeader(Request.Headers, out sessionToken))
+            if (!authenticationService.VerifyAuthenticationHeader(Request.Headers, out sessionToken))
             {
                 log.Debug("Could not verify request headers.");
                 throw new HttpResponseException(HttpStatusCode.Unauthorized);
@@ -694,7 +686,7 @@ namespace Sif.Framework.Providers
         protected virtual string CheckAuthorisation(string serviceName, string[] zoneId, string[] contextId, Right right)
         {
             string sessionToken = CheckAuthorisation(zoneId, contextId);
-            Environment environment = authService.GetEnvironmentBySessionToken(sessionToken);
+            Model.Infrastructure.Environment environment = authenticationService.GetEnvironmentBySessionToken(sessionToken);
 
             if (environment == null)
             {

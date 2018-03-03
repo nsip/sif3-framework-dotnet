@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2014 Systemic Pty Ltd
+ * Copyright 2018 Systemic Pty Ltd
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,20 @@ using Sif.Framework.Model.Infrastructure;
 namespace Sif.Framework.Persistence
 {
 
-    interface IEnvironmentRegisterRepository : IGenericRepository<EnvironmentRegister, long>
+    /// <summary>
+    /// Repository interface for the EnvironmentRegister type.
+    /// </summary>
+    public interface IEnvironmentRegisterRepository : IGenericRepository<EnvironmentRegister, long>
     {
 
+        /// <summary>
+        /// Retrieve the Environment Register by the identifiers specified.
+        /// </summary>
+        /// <param name="applicationKey">Application key.</param>
+        /// <param name="instanceId">Instance ID.</param>
+        /// <param name="userToken">User token.</param>
+        /// <param name="solutionId">Solution ID.</param>
+        /// <returns>Environment Register defined by the identifiers specified.</returns>
         EnvironmentRegister RetrieveByUniqueIdentifiers(string applicationKey, string instanceId, string userToken, string solutionId);
 
     }

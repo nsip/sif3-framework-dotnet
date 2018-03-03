@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2014 Systemic Pty Ltd
+ * Copyright 2018 Systemic Pty Ltd
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ namespace Sif.Framework.Persistence.NHibernate
     /// <summary>
     /// A Singleton helper class for managing NHibernate sessions based upon the default configuration file.
     /// </summary>
-    class EnvironmentProviderSessionFactory : IBaseSessionFactory
+    public class EnvironmentProviderSessionFactory : IBaseSessionFactory
     {
         private static EnvironmentProviderSessionFactory environmentProviderSessionFactory;
 

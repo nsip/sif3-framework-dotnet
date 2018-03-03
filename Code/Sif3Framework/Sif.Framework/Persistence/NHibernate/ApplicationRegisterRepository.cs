@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2014 Systemic Pty Ltd
+ * Copyright 2018 Systemic Pty Ltd
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,16 +21,29 @@ using System;
 namespace Sif.Framework.Persistence.NHibernate
 {
 
+    /// <summary>
+    /// <see cref="IEnvironmentRegisterRepository"/>
+    /// </summary>
     public class ApplicationRegisterRepository : GenericRepository<ApplicationRegister, long>, IApplicationRegisterRepository
     {
 
-        public ApplicationRegisterRepository()
-            : base(EnvironmentProviderSessionFactory.Instance)
+        /// <summary>
+        /// Create an instance of this repository class with a predefined sessionFactory instance.
+        /// </summary>
+        protected ApplicationRegisterRepository() : this(EnvironmentProviderSessionFactory.Instance)
         {
-
         }
 
-        /// <see cref="Sif.Framework.Persistence.IApplicationRegisterRepository{T}.RetrieveByApplicationKey(string)">RetrieveByApplicationKey</see>
+        /// <summary>
+        /// <see cref="GenericRepository{T, PK}.GenericRepository(IBaseSessionFactory)"/>
+        /// </summary>
+        public ApplicationRegisterRepository(IBaseSessionFactory sessionFactory) : base(sessionFactory)
+        {
+        }
+
+        /// <summary>
+        /// <see cref="IApplicationRegisterRepository.RetrieveByApplicationKey(string)"/>
+        /// </summary>
         public virtual ApplicationRegister RetrieveByApplicationKey(string applicationKey)
         {
 

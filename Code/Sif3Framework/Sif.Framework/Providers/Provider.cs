@@ -25,7 +25,6 @@ using Sif.Framework.Model.Responses;
 using Sif.Framework.Service;
 using Sif.Framework.Service.Authentication;
 using Sif.Framework.Service.Authorisation;
-using Sif.Framework.Service.Infrastructure;
 using Sif.Framework.Service.Mapper;
 using Sif.Framework.Service.Providers;
 using Sif.Framework.Service.Registration;
@@ -80,30 +79,16 @@ namespace Sif.Framework.Providers
         }
 
         /// <summary>
-        /// Default constructor that is only available to derived instances of
-        /// this class.
+        /// Create an instance of this Provider.
         /// </summary>
-        protected Provider()
-        {
-
-            if (EnvironmentType.DIRECT.Equals(SettingsManager.ProviderSettings.EnvironmentType))
-            {
-                authenticationService = new DirectAuthenticationService(new ApplicationRegisterService(), new EnvironmentService());
-            }
-            else if (EnvironmentType.BROKERED.Equals(SettingsManager.ProviderSettings.EnvironmentType))
-            {
-                authenticationService = new BrokeredAuthenticationService(new ApplicationRegisterService(), new EnvironmentService());
-            }
-
-            authorisationService = new AuthorisationService(authenticationService);
-        }
-
-        /// <summary>
-        /// Create an instance based on the specified service.
-        /// </summary>
+        /// <param name="authenticationService">Authentication service.</param>
+        /// <param name="authorisationService">Authorisation service.</param>
         /// <param name="service">Service used for managing the object type.</param>
-        public Provider(IProviderService<TSingle, TMultiple> service) : base()
+        public Provider(IAuthenticationService authenticationService, IAuthorisationService authorisationService, IObjectService<TSingle, TMultiple, string> service)
+            : base()
         {
+            this.authenticationService = authenticationService;
+            this.authorisationService = authorisationService;
             this.service = service;
         }
 

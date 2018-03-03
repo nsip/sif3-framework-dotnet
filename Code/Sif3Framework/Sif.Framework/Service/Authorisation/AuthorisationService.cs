@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2017 Systemic Pty Ltd
+ * Copyright 2018 Systemic Pty Ltd
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,10 @@
 
 using Sif.Framework.Model.Exceptions;
 using Sif.Framework.Model.Infrastructure;
-using Sif.Framework.Service.Authentication;
 using Sif.Framework.Service.Infrastructure;
+using Sif.Framework.Service.Mapper;
 using Sif.Framework.Utils;
+using Sif.Specification.Infrastructure;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -31,35 +32,15 @@ namespace Sif.Framework.Service.Authorisation
     /// </summary>
     public class AuthorisationService : IAuthorisationService
     {
+        private readonly IEnvironmentService environmentService;
 
         /// <summary>
-        /// Service used for request authentication.
+        /// Creates a new instance of this class.
         /// </summary>
-        protected IAuthenticationService authenticationService;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AuthorisationService" /> class.
-        /// </summary>
-        public AuthorisationService()
+        /// <param name="environmentService">Environment service.</param>
+        public AuthorisationService(IEnvironmentService environmentService)
         {
-            if (EnvironmentType.DIRECT.Equals(SettingsManager.ProviderSettings.EnvironmentType))
-            {
-                authenticationService = new DirectAuthenticationService(new ApplicationRegisterService(), new EnvironmentService());
-            }
-            else if (EnvironmentType.BROKERED.Equals(SettingsManager.ProviderSettings.EnvironmentType))
-            {
-                authenticationService = new BrokeredAuthenticationService(new ApplicationRegisterService(), new EnvironmentService());
-            }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AuthorisationService" /> class.
-        /// </summary>
-        /// <param name="authenticationService">An instance of either the <see cref="BrokeredAuthenticationService" /> or the 
-        ///  <see cref="DirectAuthenticationService" /> classes.</param>
-        public AuthorisationService(IAuthenticationService authenticationService)
-        {
-            this.authenticationService = authenticationService;
+            this.environmentService = environmentService;
         }
 
         /// <summary>
@@ -73,7 +54,8 @@ namespace Sif.Framework.Service.Authorisation
             string zoneId = null)
         {
             bool isAuthorised = true;
-            Environment environment = authenticationService.GetEnvironmentBySessionToken(sessionToken);
+            environmentType retrievedEnvironment = environmentService.RetrieveBySessionToken(sessionToken);
+            Environment environment = MapperFactory.CreateInstance<environmentType, Environment>(retrievedEnvironment);
 
             if (environment == null)
             {

@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2017 Systemic Pty Ltd
+ * Copyright 2018 Systemic Pty Ltd
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@ using Sif.Framework.Model.Infrastructure;
 using Sif.Framework.Persistence;
 using Sif.Framework.Persistence.NHibernate;
 using Sif.Specification.Infrastructure;
+using SimpleInjector;
 using System;
-using Environment = Sif.Framework.Model.Infrastructure.Environment;
 
 namespace Sif.Framework.Service.Infrastructure
 {
@@ -31,6 +31,10 @@ namespace Sif.Framework.Service.Infrastructure
     [TestClass]
     public class EnvironmentServiceTest
     {
+        private static readonly slf4net.ILogger log = slf4net.LoggerFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        private static Container container;
+
         private IEnvironmentRepository environmentRepository;
         private IEnvironmentService environmentService;
 
@@ -41,6 +45,14 @@ namespace Sif.Framework.Service.Infrastructure
         [ClassInitialize()]
         public static void ClassInitialize(TestContext testContext)
         {
+            container = new Container();
+            container.Register<IBaseSessionFactory>(() => EnvironmentProviderSessionFactory.Instance);
+            container.Register<IEnvironmentRegisterRepository, EnvironmentRegisterRepository>();
+            container.Register<IEnvironmentRegisterService, EnvironmentRegisterService>();
+            container.Register<IEnvironmentRepository, EnvironmentRepository>();
+            container.Register<IEnvironmentService, EnvironmentService>();
+            container.Verify();
+
             DataFactory.CreateDatabase();
         }
 
@@ -58,8 +70,8 @@ namespace Sif.Framework.Service.Infrastructure
         [TestInitialize()]
         public void TestInitialize()
         {
-            environmentRepository = new EnvironmentRepository();
-            environmentService = new EnvironmentService();
+            environmentRepository = container.GetInstance<IEnvironmentRepository>();
+            environmentService = container.GetInstance<IEnvironmentService>();
         }
 
         /// <summary>
@@ -78,9 +90,11 @@ namespace Sif.Framework.Service.Infrastructure
         {
 
             // Save a new Environment and then retrieve it using it's identifier.
-            Environment saved = DataFactory.CreateEnvironmentRequest();
+            Model.Infrastructure.Environment saved = DataFactory.CreateEnvironmentRequest();
             Guid environmentId = environmentRepository.Save(saved);
             environmentType retrieved = environmentService.Retrieve(environmentId);
+
+            if (log.IsDebugEnabled) log.Debug($"Successfully saved and retrieved Environment {environmentId}.");
 
             // Assert that the retrieved Environment matches the saved Environment.
             Assert.AreEqual(saved.ApplicationInfo.AdapterProduct.IconURI, retrieved.applicationInfo.adapterProduct.iconURI);

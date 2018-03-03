@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2015 Systemic Pty Ltd
+ * Copyright 2018 Systemic Pty Ltd
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,30 @@
  */
 
 using Sif.Framework.Model.Infrastructure;
+using Sif.Framework.Persistence;
 using Sif.Framework.Persistence.NHibernate;
 
 namespace Sif.Framework.Service.Infrastructure
 {
 
+    /// <summary>
+    /// Service class for the ApplicationRegister type.
+    /// <see cref="IApplicationRegisterService"/>
+    /// </summary>
     public class ApplicationRegisterService : GenericService<ApplicationRegister, long>, IApplicationRegisterService
     {
 
-        public ApplicationRegisterService()
-            : base(new ApplicationRegisterRepository())
+        /// <summary>
+        /// Create an instance of this repository class.
+        /// <see cref="GenericService{T, PK}.GenericService(IGenericRepository{T, PK})"/>
+        /// </summary>
+        public ApplicationRegisterService(IApplicationRegisterRepository repository) : base(repository)
         {
-
         }
 
+        /// <summary>
+        /// <see cref="IApplicationRegisterService.RetrieveByApplicationKey(string)"/>
+        /// </summary>
         public virtual ApplicationRegister RetrieveByApplicationKey(string applicationKey)
         {
             return ((ApplicationRegisterRepository)repository).RetrieveByApplicationKey(applicationKey);

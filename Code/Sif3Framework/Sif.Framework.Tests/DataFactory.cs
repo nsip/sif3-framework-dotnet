@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2017 Systemic Pty Ltd
+ * Copyright 2018 Systemic Pty Ltd
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 using NHibernate.Tool.hbm2ddl;
 using System;
 using System.Collections.Generic;
-using Configuration = NHibernate.Cfg.Configuration;
 
 namespace Sif.Framework.Model.Infrastructure
 {
@@ -33,11 +32,11 @@ namespace Sif.Framework.Model.Infrastructure
         /// </summary>
         public static void CreateDatabase()
         {
-            Configuration configuration = new Configuration();
-            configuration.Configure();
+            NHibernate.Cfg.Configuration configuration = new NHibernate.Cfg.Configuration();
+            configuration.Configure("SifFramework.cfg.xml");
             SchemaExport schemaExport = new SchemaExport(configuration);
             schemaExport.SetOutputFile("SQLite database schema.ddl");
-            schemaExport.Create(true, true);
+            schemaExport.Create(false, true);
         }
 
         /// <summary>

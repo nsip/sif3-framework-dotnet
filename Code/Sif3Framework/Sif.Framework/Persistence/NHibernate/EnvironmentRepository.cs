@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2014 Systemic Pty Ltd
+ * Copyright 2018 Systemic Pty Ltd
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,22 +16,34 @@
 
 using NHibernate;
 using System;
-using Environment = Sif.Framework.Model.Infrastructure.Environment;
 
 namespace Sif.Framework.Persistence.NHibernate
 {
 
-    public class EnvironmentRepository : GenericRepository<Environment, Guid>, IEnvironmentRepository
+    /// <summary>
+    /// <see cref="IEnvironmentRepository"/>
+    /// </summary>
+    public class EnvironmentRepository : GenericRepository<Model.Infrastructure.Environment, Guid>, IEnvironmentRepository
     {
 
-        public EnvironmentRepository()
-            : base(EnvironmentProviderSessionFactory.Instance)
+        /// <summary>
+        /// Create an instance of this repository class with a predefined sessionFactory instance.
+        /// </summary>
+        protected EnvironmentRepository() : this(EnvironmentProviderSessionFactory.Instance)
         {
-
         }
 
-        /// <see cref="Sif.Framework.Persistence.IEnvironmentRepository{T}.RetrieveBySessionToken(string)">RetrieveBySessionToken</see>
-        public virtual Environment RetrieveBySessionToken(string sessionToken)
+        /// <summary>
+        /// <see cref="GenericRepository{T, PK}.GenericRepository(IBaseSessionFactory)"/>
+        /// </summary>
+        public EnvironmentRepository(IBaseSessionFactory sessionFactory) : base(sessionFactory)
+        {
+        }
+
+        /// <summary>
+        /// <see cref="IEnvironmentRepository.RetrieveBySessionToken(string)"/>
+        /// </summary>
+        public virtual Model.Infrastructure.Environment RetrieveBySessionToken(string sessionToken)
         {
 
             if (string.IsNullOrWhiteSpace(sessionToken))
@@ -41,7 +53,7 @@ namespace Sif.Framework.Persistence.NHibernate
 
             using (ISession session = sessionFactory.OpenSession())
             {
-                return session.QueryOver<Environment>().Where(e => e.SessionToken == sessionToken).SingleOrDefault();
+                return session.QueryOver<Model.Infrastructure.Environment>().Where(e => e.SessionToken == sessionToken).SingleOrDefault();
             }
 
         }

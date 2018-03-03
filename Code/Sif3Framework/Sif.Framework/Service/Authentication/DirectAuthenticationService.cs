@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2016 Systemic Pty Ltd
+ * Copyright 2018 Systemic Pty Ltd
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,13 +24,18 @@ namespace Sif.Framework.Service.Authentication
 {
 
     /// <summary>
-    /// <see cref="Sif.Framework.Service.Authentication.AuthenticationService">AuthenticationService</see>
+    /// <see cref="AuthenticationService">AuthenticationService</see>
     /// </summary>
-    class DirectAuthenticationService : AuthenticationService
+    public class DirectAuthenticationService : AuthenticationService
     {
         private IApplicationRegisterService applicationRegisterService;
         private IEnvironmentService environmentService;
 
+        /// <summary>
+        /// Create an instance of this service.
+        /// </summary>
+        /// <param name="applicationRegisterService">Application Register service.</param>
+        /// <param name="environmentService">Enviroment service.</param>
         public DirectAuthenticationService(IApplicationRegisterService applicationRegisterService, IEnvironmentService environmentService)
         {
             this.applicationRegisterService = applicationRegisterService;
@@ -38,7 +43,7 @@ namespace Sif.Framework.Service.Authentication
         }
 
         /// <summary>
-        /// <see cref="Sif.Framework.Service.Authentication.AuthenticationService.InitialSharedSecret(System.String)">InitialSharedSecret</see>
+        /// <see cref="AuthenticationService.InitialSharedSecret(System.String)">InitialSharedSecret</see>
         /// </summary>
         protected override string InitialSharedSecret(string applicationKey)
         {
@@ -47,7 +52,7 @@ namespace Sif.Framework.Service.Authentication
         }
 
         /// <summary>
-        /// <see cref="Sif.Framework.Service.Authentication.AuthenticationService.SharedSecret(System.String)">SharedSecret</see>
+        /// <see cref="AuthenticationService.SharedSecret(System.String)">SharedSecret</see>
         /// </summary>
         protected override string SharedSecret(string sessionToken)
         {
@@ -62,6 +67,9 @@ namespace Sif.Framework.Service.Authentication
             return (applicationRegister == null ? null : applicationRegister.SharedSecret);
         }
 
+        /// <summary>
+        /// <see cref="AuthenticationService.GetEnvironmentBySessionToken(string)">GetEnvironmentBySessionToken</see>
+        /// </summary>
         public override Environment GetEnvironmentBySessionToken(string sessionToken)
         {
             environmentType environment = environmentService.RetrieveBySessionToken(sessionToken);

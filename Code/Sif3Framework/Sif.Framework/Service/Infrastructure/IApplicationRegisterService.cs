@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2015 Systemic Pty Ltd
+ * Copyright 2018 Systemic Pty Ltd
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,17 @@ using Sif.Framework.Model.Infrastructure;
 namespace Sif.Framework.Service.Infrastructure
 {
 
-    interface IApplicationRegisterService : IGenericService<ApplicationRegister, long>
+    /// <summary>
+    /// Service interface for the ApplicationRegister type.
+    /// </summary>
+    public interface IApplicationRegisterService : IGenericService<ApplicationRegister, long>
     {
 
+        /// <summary>
+        /// Retrieve the Application Register associated with the application key specified.
+        /// </summary>
+        /// <param name="applicationKey">Application key.</param>
+        /// <returns>Application Register associated with the application key.</returns>
         ApplicationRegister RetrieveByApplicationKey(string applicationKey);
 
     }

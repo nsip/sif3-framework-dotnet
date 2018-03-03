@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2017 Systemic Pty Ltd
+ * Copyright 2018 Systemic Pty Ltd
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,10 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sif.Framework.Model.Infrastructure;
+using SimpleInjector;
 using System;
 using System.Collections.Generic;
-using Environment = Sif.Framework.Model.Infrastructure.Environment;
+using System.Linq;
 
 namespace Sif.Framework.Persistence.NHibernate
 {
@@ -29,6 +30,10 @@ namespace Sif.Framework.Persistence.NHibernate
     [TestClass]
     public class EnvironmentRepositoryTest
     {
+        private static readonly slf4net.ILogger log = slf4net.LoggerFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        private static Container container;
+
         private IEnvironmentRepository environmentRepository;
 
         /// <summary>
@@ -38,6 +43,11 @@ namespace Sif.Framework.Persistence.NHibernate
         [ClassInitialize()]
         public static void ClassInitialize(TestContext testContext)
         {
+            container = new Container();
+            container.Register<IBaseSessionFactory>(() => EnvironmentProviderSessionFactory.Instance);
+            container.Register<IEnvironmentRepository, EnvironmentRepository>();
+            container.Verify();
+
             DataFactory.CreateDatabase();
         }
 
@@ -55,14 +65,14 @@ namespace Sif.Framework.Persistence.NHibernate
         [TestInitialize()]
         public void TestInitialize()
         {
-            environmentRepository = new EnvironmentRepository();
+            environmentRepository = container.GetInstance<IEnvironmentRepository>();
         }
 
         /// <summary>
         /// Use TestCleanup to run code after each test has run.
         /// </summary>
         [TestCleanup()]
-        public void MyTestCleanup()
+        public void TestCleanup()
         {
         }
 
@@ -74,9 +84,11 @@ namespace Sif.Framework.Persistence.NHibernate
         {
 
             // Save a new Environment and then retrieve it using it's identifier.
-            Environment saved = DataFactory.CreateEnvironmentRequest();
+            Model.Infrastructure.Environment saved = DataFactory.CreateEnvironmentRequest();
             Guid environmentId = environmentRepository.Save(saved);
-            Environment retrieved = environmentRepository.Retrieve(environmentId);
+            Model.Infrastructure.Environment retrieved = environmentRepository.Retrieve(environmentId);
+
+            if (log.IsDebugEnabled) log.Debug($"Successfully saved and retrieved Environment {environmentId}.");
 
             // Assert that the retrieved Environment matches the saved Environment.
             Assert.AreEqual(saved.Type, retrieved.Type);
@@ -95,12 +107,12 @@ namespace Sif.Framework.Persistence.NHibernate
         {
 
             // Save a new Environment.
-            Environment saved = DataFactory.CreateEnvironmentRequest();
+            Model.Infrastructure.Environment saved = DataFactory.CreateEnvironmentRequest();
             environmentRepository.Save(saved);
 
             // Create an example Environment instance for use in the retrieve call.
             ApplicationInfo applicationInfo = new ApplicationInfo { ApplicationKey = "UnitTesting" };
-            Environment example = new Environment
+            Model.Infrastructure.Environment example = new Model.Infrastructure.Environment
             {
                 ApplicationInfo = applicationInfo,
                 InstanceId = saved.InstanceId,
@@ -110,10 +122,12 @@ namespace Sif.Framework.Persistence.NHibernate
             };
 
             // Retrieve Environments based on the example Environment instance.
-            IEnumerable<Environment> environments = environmentRepository.Retrieve(example);
+            IList<Model.Infrastructure.Environment> environments = environmentRepository.Retrieve(example)?.ToList();
+
+            if (log.IsDebugEnabled) log.Debug($"Successfully retrieved {environments.Count} Environments.");
 
             // Assert that the retrieved Environments match properties of the example Environment instance.
-            foreach (Environment retrieved in environments)
+            foreach (Model.Infrastructure.Environment retrieved in environments)
             {
                 Assert.AreEqual(saved.ApplicationInfo.ApplicationKey, retrieved.ApplicationInfo.ApplicationKey);
                 Assert.AreEqual(saved.InstanceId, retrieved.InstanceId);
@@ -133,9 +147,11 @@ namespace Sif.Framework.Persistence.NHibernate
         {
 
             // Save a new Environment and then retrieve it based on it's session token.
-            Environment saved = DataFactory.CreateEnvironmentRequest();
+            Model.Infrastructure.Environment saved = DataFactory.CreateEnvironmentRequest();
             environmentRepository.Save(saved);
-            Environment retrieved = environmentRepository.RetrieveBySessionToken(saved.SessionToken);
+            Model.Infrastructure.Environment retrieved = environmentRepository.RetrieveBySessionToken(saved.SessionToken);
+
+            if (log.IsDebugEnabled) log.Debug($"Successfully retrieved an Environment by session token {saved.SessionToken}.");
 
             // Assert that the retrieved Environment matches the saved Environment.
             Assert.AreEqual(saved.ApplicationInfo.ApplicationKey, retrieved.ApplicationInfo.ApplicationKey);

@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2017 Systemic Pty Ltd
+ * Copyright 2018 Systemic Pty Ltd
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 
 using Sif.Framework.Model.Exceptions;
+using Sif.Framework.Service.Authentication;
 using Sif.Framework.Service.Infrastructure;
 using Sif.Framework.Utils;
 using Sif.Framework.WebApi.ModelBinders;
@@ -24,7 +25,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using Environment = Sif.Framework.Model.Infrastructure.Environment;
 
 namespace Sif.Framework.Controllers
 {
@@ -35,7 +35,7 @@ namespace Sif.Framework.Controllers
     /// Valid single operations: POST, GET, DELETE.
     /// Valid multiple operations: none.
     /// </summary>
-    public abstract class EnvironmentsController : SifController<environmentType, Environment>
+    public abstract class EnvironmentsController : SifController<environmentType, Model.Infrastructure.Environment>
     {
 
         /// <summary>
@@ -134,10 +134,12 @@ namespace Sif.Framework.Controllers
         }
 
         /// <summary>
-        /// Create an instance.
+        /// Create an instance of this Controller.
         /// </summary>
-        public EnvironmentsController()
-            : base(new EnvironmentService())
+        /// <param name="authenticationService">Authentication service.</param>
+        /// <param name="service">Service used for managing conversion between the object types.</param>
+        public EnvironmentsController(IAuthenticationService authenticationService, IEnvironmentService service)
+            : base(authenticationService, service)
         {
         }
 
@@ -207,7 +209,7 @@ namespace Sif.Framework.Controllers
             HttpResponseMessage responseMessage = null;
             string initialToken;
 
-            if (!authService.VerifyInitialAuthenticationHeader(Request.Headers, out initialToken))
+            if (!authenticationService.VerifyInitialAuthenticationHeader(Request.Headers, out initialToken))
             {
                 string errorMessage = "The POST request failed for Environment creation due to invalid authentication credentials.";
                 responseMessage = HttpUtils.CreateErrorResponse(Request, HttpStatusCode.Unauthorized, errorMessage);

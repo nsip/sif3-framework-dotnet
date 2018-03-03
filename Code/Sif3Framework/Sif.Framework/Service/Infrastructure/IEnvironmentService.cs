@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2014 Systemic Pty Ltd
+ * Copyright 2018 Systemic Pty Ltd
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,17 @@ using Sif.Specification.Infrastructure;
 namespace Sif.Framework.Service.Infrastructure
 {
 
-    interface IEnvironmentService : ISifService<environmentType, Environment>
+    /// <summary>
+    /// Service interface for the Environment type.
+    /// </summary>
+    public interface IEnvironmentService : ISifService<environmentType, Environment>
     {
 
+        /// <summary>
+        /// Retrieve the environment associated with the session token.
+        /// </summary>
+        /// <param name="sessionToken">Session token.</param>
+        /// <returns>Environment associated with the session token</returns>
         environmentType RetrieveBySessionToken(string sessionToken);
 
     }

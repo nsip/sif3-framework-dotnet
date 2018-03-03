@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2014 Systemic Pty Ltd
+ * Copyright 2018 Systemic Pty Ltd
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,14 @@
  */
 
 using System;
-using Environment = Sif.Framework.Model.Infrastructure.Environment;
 
 namespace Sif.Framework.Persistence
 {
 
-    interface IEnvironmentRepository : IGenericRepository<Environment, Guid>
+    /// <summary>
+    /// Repository interface for the Environment type.
+    /// </summary>
+    public interface IEnvironmentRepository : IGenericRepository<Model.Infrastructure.Environment, Guid>
     {
 
         /// <summary>
@@ -28,7 +30,7 @@ namespace Sif.Framework.Persistence
         /// </summary>
         /// <param name="sessionToken">Session token for the Environment.</param>
         /// <returns>Environment defined by the passed session token.</returns>
-        Environment RetrieveBySessionToken(string sessionToken);
+        Model.Infrastructure.Environment RetrieveBySessionToken(string sessionToken);
 
     }
 

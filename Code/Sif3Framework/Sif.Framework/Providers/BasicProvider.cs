@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2017 Systemic Pty Ltd
+ * Copyright 2018 Systemic Pty Ltd
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@
 using Sif.Framework.Model.DataModels;
 using Sif.Framework.Model.Exceptions;
 using Sif.Framework.Model.Infrastructure;
+using Sif.Framework.Service.Authentication;
+using Sif.Framework.Service.Authorisation;
 using Sif.Framework.Service.Providers;
 using Sif.Framework.Service.Serialisation;
 using Sif.Framework.Utils;
@@ -41,10 +43,13 @@ namespace Sif.Framework.Providers
     {
 
         /// <summary>
-        /// Create an instance based on the specified service.
+        /// Create an instance of this Provider.
         /// </summary>
+        /// <param name="authenticationService">Authentication service.</param>
+        /// <param name="authorisationService">Authorisation service.</param>
         /// <param name="service">Service used for managing the object type.</param>
-        public BasicProvider(IBasicProviderService<T> service) : base()
+        public BasicProvider(IAuthenticationService authenticationService, IAuthorisationService authorisationService, IBasicProviderService<T> service)
+            : base(authenticationService, authorisationService, service)
         {
             this.service = service;
         }

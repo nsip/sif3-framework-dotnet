@@ -22,6 +22,7 @@ using Sif.Framework.Providers;
 using Sif.Framework.Service.Providers;
 using Sif.Framework.Utils;
 using Sif.Framework.WebApi.ActionResults;
+using Sif.Framework.WebApi.Filters;
 using Sif.Framework.WebApi.ModelBinders;
 using Sif.Specification.DataModel.Au;
 using Sif.Specification.Infrastructure;
@@ -163,14 +164,9 @@ namespace Sif.Framework.Demo.Broker.Controllers
             return result;
         }
 
+        [BasicAuthentication]
         public override IHttpActionResult Get([FromUri(Name = "id")] string refId, [MatrixParameter] string[] zoneId = null, [MatrixParameter] string[] contextId = null)
         {
-            string sessionToken;
-
-            if (!authenticationService.VerifyAuthenticationHeader(Request.Headers, out sessionToken))
-            {
-                return Unauthorized();
-            }
 
             if (HttpUtils.HasPagingHeaders(Request.Headers))
             {
@@ -186,7 +182,7 @@ namespace Sif.Framework.Demo.Broker.Controllers
 
             try
             {
-                Queue obj = service.Retrieve(refId, zoneId: (zoneId == null ? null : zoneId[0]), contextId: (contextId == null ? null : contextId[0]));
+                Queue obj = Service.Retrieve(refId, zoneId: (zoneId?[0]), contextId: (contextId?[0]));
 
                 if (obj == null)
                 {
@@ -225,14 +221,9 @@ namespace Sif.Framework.Demo.Broker.Controllers
             return StatusCode(HttpStatusCode.MethodNotAllowed);
         }
 
+        [BasicAuthentication]
         public override IHttpActionResult Post(Queue obj, [MatrixParameter] string[] zoneId = null, [MatrixParameter] string[] contextId = null)
         {
-            string sessionToken;
-
-            if (!authenticationService.VerifyAuthenticationHeader(Request.Headers, out sessionToken))
-            {
-                return Unauthorized();
-            }
 
             if ((zoneId != null && zoneId.Length != 1) || (contextId != null && contextId.Length != 1))
             {
@@ -251,7 +242,7 @@ namespace Sif.Framework.Demo.Broker.Controllers
 
                     if (hasAdvisoryId)
                     {
-                        Queue createdObject = service.Create(obj, mustUseAdvisory, zoneId: (zoneId == null ? null : zoneId[0]), contextId: (contextId == null ? null : contextId[0]));
+                        Queue createdObject = Service.Create(obj, mustUseAdvisory, zoneId: (zoneId?[0]), contextId: (contextId?[0]));
                         string uri = Url.Link("DefaultApi", new { controller = TypeName, id = createdObject.RefId });
                         result = Created(uri, createdObject);
                     }
@@ -263,7 +254,7 @@ namespace Sif.Framework.Demo.Broker.Controllers
                 }
                 else
                 {
-                    Queue createdObject = service.Create(obj, zoneId: (zoneId == null ? null : zoneId[0]), contextId: (contextId == null ? null : contextId[0]));
+                    Queue createdObject = Service.Create(obj, zoneId: (zoneId?[0]), contextId: (contextId?[0]));
                     string uri = Url.Link("DefaultApi", new { controller = typeof(Queue).Name, id = createdObject.RefId });
                     result = Created(uri, createdObject);
                 }

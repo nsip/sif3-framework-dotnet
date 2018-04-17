@@ -16,16 +16,17 @@
 
 using Sif.Framework.Demo.EventsConnector.Models;
 using Sif.Framework.Demo.EventsConnector.Services;
-using Sif.Framework.Providers;
-using Sif.Framework.WebApi.ModelBinders;
-using System.Web.Http;
-using System.Collections.Generic;
-using Sif.Specification.Infrastructure;
-using Sif.Framework.Utils;
-using System.Net;
 using Sif.Framework.Model.Exceptions;
+using Sif.Framework.Providers;
+using Sif.Framework.Utils;
+using Sif.Framework.WebApi.Filters;
+using Sif.Framework.WebApi.ModelBinders;
+using Sif.Specification.Infrastructure;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Web.Http;
 
 namespace Sif.Framework.Demo.EventsConnector.Controllers
 {
@@ -44,20 +45,13 @@ namespace Sif.Framework.Demo.EventsConnector.Controllers
             return base.Post(obj, zoneId, contextId);
         }
 
+        [BasicAuthentication]
         public override IHttpActionResult Post(List<StudentPersonal> objs, [MatrixParameter] string[] zoneId = null, [MatrixParameter] string[] contextId = null)
         {
 
             foreach (KeyValuePair<string, IEnumerable<string>> nameValues in Request.Headers)
             {
                 if (log.IsDebugEnabled) log.Debug($"*** Header field is [{nameValues.Key}:{string.Join(",", nameValues.Value)}]");
-            }
-
-            //return base.Post(objs, zoneId, contextId);
-            string sessionToken;
-
-            if (!authenticationService.VerifyAuthenticationHeader(Request.Headers, out sessionToken))
-            {
-                return Unauthorized();
             }
 
             if ((zoneId != null && zoneId.Length != 1) || (contextId != null && contextId.Length != 1))
@@ -75,8 +69,11 @@ namespace Sif.Framework.Demo.EventsConnector.Controllers
                 foreach (StudentPersonal obj in objs)
                 {
                     bool hasAdvisoryId = !string.IsNullOrWhiteSpace(obj.RefId);
-                    createType status = new createType();
-                    status.advisoryId = (hasAdvisoryId ? obj.RefId : null);
+
+                    createType status = new createType
+                    {
+                        advisoryId = (hasAdvisoryId ? obj.RefId : null)
+                    };
 
                     try
                     {
@@ -86,7 +83,7 @@ namespace Sif.Framework.Demo.EventsConnector.Controllers
 
                             if (hasAdvisoryId)
                             {
-                                status.id = service.Create(obj, mustUseAdvisory, zoneId: (zoneId == null ? null : zoneId[0]), contextId: (contextId == null ? null : contextId[0])).RefId;
+                                status.id = Service.Create(obj, mustUseAdvisory, zoneId: (zoneId?[0]), contextId: (contextId?[0])).RefId;
                                 status.statusCode = ((int)HttpStatusCode.Created).ToString();
                             }
                             else
@@ -98,7 +95,7 @@ namespace Sif.Framework.Demo.EventsConnector.Controllers
                         }
                         else
                         {
-                            status.id = service.Create(obj, zoneId: (zoneId == null ? null : zoneId[0]), contextId: (contextId == null ? null : contextId[0])).RefId;
+                            status.id = Service.Create(obj, zoneId: (zoneId?[0]), contextId: (contextId?[0])).RefId;
                             status.statusCode = ((int)HttpStatusCode.Created).ToString();
                         }
 

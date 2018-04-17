@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2017 Systemic Pty Ltd
+ * Copyright 2018 Systemic Pty Ltd
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,61 @@ namespace Sif.Framework.Service.Authentication
     {
 
         /// <summary>
+        /// Extract the credential details from the authorisation token. The first item is the session token and the
+        /// second is the shared secret.
+        /// </summary>
+        /// <param name="authorisationToken">Authorisation token to process.</param>
+        /// <returns>Credential details extracted from the authorisation token</returns>
+        /// <exception cref="InvalidAuthorisationTokenException">authorisationToken is null, not recognised or invalid.</exception>
+        private string[] ExtractCredentials(AuthorisationToken authorisationToken)
+        {
+
+            if (authorisationToken == null)
+            {
+                throw new InvalidAuthorisationTokenException("Authorisation token is null.");
+            }
+
+            if (string.IsNullOrWhiteSpace(authorisationToken.Token))
+            {
+                throw new InvalidAuthorisationTokenException("The authorisation token value is null or empty.");
+            }
+
+            if (string.IsNullOrWhiteSpace(authorisationToken.Timestamp))
+            {
+                throw new InvalidAuthorisationTokenException("The authorisation token timestamp is null or empty.");
+            }
+
+            string[] tokens = authorisationToken.Token.Split(' ');
+
+            if (tokens.Length != 2 || !AuthenticationMethod.SIF_HMACSHA256.ToString().Equals(tokens[0]) || string.IsNullOrWhiteSpace(tokens[1]))
+            {
+                throw new InvalidAuthorisationTokenException("Authorisation token is not recognised.");
+            }
+
+            string base64EncodedString = tokens[1];
+            string combinedMessage = Encoding.ASCII.GetString(Convert.FromBase64String(base64EncodedString));
+            string[] credentials = combinedMessage.Split(':');
+
+            if (credentials.Length != 2 || string.IsNullOrWhiteSpace(credentials[0]) || string.IsNullOrWhiteSpace(credentials[1]))
+            {
+                throw new InvalidAuthorisationTokenException("Authorisation token is invalid.");
+            }
+
+            return credentials;
+        }
+
+        /// <summary>
+        /// <see cref="IAuthorisationTokenService.ExtractSessionToken(AuthorisationToken)"/>
+        /// </summary>
+        public string ExtractSessionToken(AuthorisationToken authorisationToken)
+        {
+            string[] credentials = ExtractCredentials(authorisationToken);
+            string sessionToken = credentials[0];
+
+            return sessionToken;
+        }
+
+        /// <summary>
         /// <see cref="IAuthorisationTokenService.Generate(string, string)"/>
         /// </summary>
         public AuthorisationToken Generate(string sessionToken, string sharedSecret)
@@ -45,10 +100,12 @@ namespace Sif.Framework.Service.Authentication
                 throw new ArgumentNullException("sharedSecret");
             }
 
-            AuthorisationToken authorisationToken = new AuthorisationToken();
+            AuthorisationToken authorisationToken = new AuthorisationToken
+            {
+                // Generate UTC ISO 8601 date string.
+                Timestamp = DateTime.UtcNow.ToString("o")
+            };
 
-            // Generate UTC ISO 8601 date string.
-            authorisationToken.Timestamp = DateTime.UtcNow.ToString("o");
             // 1. Combine the Token and current date time in UTC using ISO 8601 format.
             byte[] messageBytes = Encoding.ASCII.GetBytes(sessionToken + ":" + authorisationToken.Timestamp);
             // 2. Calculate the HMAC SHA 256 using the Consumer Secret and then Base64 encode.
@@ -78,44 +135,15 @@ namespace Sif.Framework.Service.Authentication
         public bool Verify(AuthorisationToken authorisationToken, GetSharedSecret getSharedSecret, out string sessionToken)
         {
 
-            if (authorisationToken == null)
-            {
-                throw new InvalidAuthorisationTokenException("Authorisation token is null.");
-            }
-
-            if (string.IsNullOrWhiteSpace(authorisationToken.Token))
-            {
-                throw new InvalidAuthorisationTokenException("The authorisation token value is null or empty.");
-            }
-
-            if (string.IsNullOrWhiteSpace(authorisationToken.Timestamp))
-            {
-                throw new InvalidAuthorisationTokenException("The authorisation token timestamp is null or empty.");
-            }
-
             if (getSharedSecret == null)
             {
                 throw new ArgumentNullException("getSharedSecret");
             }
 
-            string[] tokens = authorisationToken.Token.Split(' ');
+            string[] credentials = ExtractCredentials(authorisationToken);
 
-            if (tokens.Length != 2 || !AuthenticationMethod.SIF_HMACSHA256.ToString().Equals(tokens[0]) || string.IsNullOrWhiteSpace(tokens[1]))
-            {
-                throw new InvalidAuthorisationTokenException("Authorisation token is not recognised.");
-            }
-
-            string base64EncodedString = tokens[1];
-            string combinedMessage = Encoding.ASCII.GetString(Convert.FromBase64String(base64EncodedString));
-            string[] nextTokens = combinedMessage.Split(':');
-
-            if (nextTokens.Length != 2 || string.IsNullOrWhiteSpace(nextTokens[0]) || string.IsNullOrWhiteSpace(nextTokens[1]))
-            {
-                throw new InvalidAuthorisationTokenException("Authorisation token is invalid.");
-            }
-
-            string hmacsha256EncodedString = nextTokens[1];
-            sessionToken = nextTokens[0];
+            string hmacsha256EncodedString = credentials[1];
+            sessionToken = credentials[0];
             string sharedSecret = getSharedSecret(sessionToken);
 
             // Recalculate the encoded HMAC SHA256 string.

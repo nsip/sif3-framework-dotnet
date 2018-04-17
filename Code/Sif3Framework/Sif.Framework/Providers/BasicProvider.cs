@@ -17,11 +17,10 @@
 using Sif.Framework.Model.DataModels;
 using Sif.Framework.Model.Exceptions;
 using Sif.Framework.Model.Infrastructure;
-using Sif.Framework.Service.Authentication;
-using Sif.Framework.Service.Authorisation;
 using Sif.Framework.Service.Providers;
 using Sif.Framework.Service.Serialisation;
 using Sif.Framework.Utils;
+using Sif.Framework.WebApi.Filters;
 using Sif.Framework.WebApi.ModelBinders;
 using Sif.Specification.Infrastructure;
 using System;
@@ -45,32 +44,19 @@ namespace Sif.Framework.Providers
         /// <summary>
         /// Create an instance of this Provider.
         /// </summary>
-        /// <param name="authenticationService">Authentication service.</param>
-        /// <param name="authorisationService">Authorisation service.</param>
         /// <param name="service">Service used for managing the object type.</param>
-        public BasicProvider(IAuthenticationService authenticationService, IAuthorisationService authorisationService, IBasicProviderService<T> service)
-            : base(authenticationService, authorisationService, service)
+        public BasicProvider(IBasicProviderService<T> service) : base()
         {
-            this.service = service;
+            Service = service;
         }
 
         /// <summary>
         /// <see cref="Provider{TSingle, TMultiple}.Post(TMultiple, string[], string[])">Post</see>
         /// </summary>
+        [BasicAuthentication]
+        [Authorisation(RightType.CREATE)]
         public override IHttpActionResult Post(List<T> objs, [MatrixParameter] string[] zoneId = null, [MatrixParameter] string[] contextId = null)
         {
-            string sessionToken;
-
-            if (!authenticationService.VerifyAuthenticationHeader(Request.Headers, out sessionToken))
-            {
-                return Unauthorized();
-            }
-
-            // Check ACLs and return StatusCode(HttpStatusCode.Forbidden) if appropriate.
-            if (!authorisationService.IsAuthorised(Request.Headers, sessionToken, $"{TypeName}s", RightType.CREATE, RightValue.APPROVED))
-            {
-                return StatusCode(HttpStatusCode.Forbidden);
-            }
 
             if ((zoneId != null && zoneId.Length != 1) || (contextId != null && contextId.Length != 1))
             {
@@ -87,8 +73,11 @@ namespace Sif.Framework.Providers
                 foreach (T obj in objs)
                 {
                     bool hasAdvisoryId = !string.IsNullOrWhiteSpace(obj.RefId);
-                    createType status = new createType();
-                    status.advisoryId = (hasAdvisoryId ? obj.RefId : null);
+
+                    createType status = new createType
+                    {
+                        advisoryId = (hasAdvisoryId ? obj.RefId : null)
+                    };
 
                     try
                     {
@@ -98,7 +87,7 @@ namespace Sif.Framework.Providers
 
                             if (hasAdvisoryId)
                             {
-                                status.id = service.Create(obj, mustUseAdvisory, zoneId: (zoneId == null ? null : zoneId[0]), contextId: (contextId == null ? null : contextId[0])).RefId;
+                                status.id = Service.Create(obj, mustUseAdvisory, zoneId: (zoneId?[0]), contextId: (contextId?[0])).RefId;
                                 status.statusCode = ((int)HttpStatusCode.Created).ToString();
                             }
                             else
@@ -110,7 +99,7 @@ namespace Sif.Framework.Providers
                         }
                         else
                         {
-                            status.id = service.Create(obj, zoneId: (zoneId == null ? null : zoneId[0]), contextId: (contextId == null ? null : contextId[0])).RefId;
+                            status.id = Service.Create(obj, zoneId: (zoneId?[0]), contextId: (contextId?[0])).RefId;
                             status.statusCode = ((int)HttpStatusCode.Created).ToString();
                         }
 
@@ -159,20 +148,10 @@ namespace Sif.Framework.Providers
         /// <summary>
         /// <see cref="Provider{TSingle, TMultiple}.Put(TMultiple, string[], string[])">Put</see>
         /// </summary>
+        [BasicAuthentication]
+        [Authorisation(RightType.UPDATE)]
         public override IHttpActionResult Put(List<T> objs, [MatrixParameter] string[] zoneId = null, [MatrixParameter] string[] contextId = null)
         {
-            string sessionToken;
-
-            if (!authenticationService.VerifyAuthenticationHeader(Request.Headers, out sessionToken))
-            {
-                return Unauthorized();
-            }
-
-            // Check ACLs and return StatusCode(HttpStatusCode.Forbidden) if appropriate.
-            if (!authorisationService.IsAuthorised(Request.Headers, sessionToken, $"{TypeName}s", RightType.CREATE, RightValue.APPROVED))
-            {
-                return StatusCode(HttpStatusCode.Forbidden);
-            }
 
             if ((zoneId != null && zoneId.Length != 1) || (contextId != null && contextId.Length != 1))
             {
@@ -187,12 +166,15 @@ namespace Sif.Framework.Providers
 
                 foreach (T obj in objs)
                 {
-                    updateType status = new updateType();
-                    status.id = obj.RefId;
+
+                    updateType status = new updateType
+                    {
+                        id = obj.RefId
+                    };
 
                     try
                     {
-                        service.Update(obj, zoneId: (zoneId == null ? null : zoneId[0]), contextId: (contextId == null ? null : contextId[0]));
+                        Service.Update(obj, zoneId: (zoneId?[0]), contextId: (contextId?[0]));
                         status.statusCode = ((int)HttpStatusCode.NoContent).ToString();
                     }
                     catch (ArgumentException e)

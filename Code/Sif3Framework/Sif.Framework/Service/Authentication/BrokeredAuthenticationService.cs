@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2017 Systemic Pty Ltd
+ * Copyright 2018 Systemic Pty Ltd
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,11 @@ namespace Sif.Framework.Service.Authentication
         private IFrameworkSettings settings;
         private ISessionService sessionService;
 
+        /// <summary>
+        /// Create an instance of this service.
+        /// </summary>
+        /// <param name="applicationRegisterService">Application Register service.</param>
+        /// <param name="environmentService">Enviroment service.</param>
         public BrokeredAuthenticationService(IApplicationRegisterService applicationRegisterService, IEnvironmentService environmentService)
         {
             this.applicationRegisterService = applicationRegisterService;
@@ -62,7 +67,7 @@ namespace Sif.Framework.Service.Authentication
         {
             ApplicationRegister applicationRegister = applicationRegisterService.RetrieveByApplicationKey(applicationKey);
 
-            return (applicationRegister == null ? null : applicationRegister.SharedSecret);
+            return (applicationRegister?.SharedSecret);
         }
 
         /// <summary>
@@ -79,7 +84,7 @@ namespace Sif.Framework.Service.Authentication
 
             ApplicationRegister applicationRegister = applicationRegisterService.RetrieveByApplicationKey(environment.applicationInfo.applicationKey);
 
-            return (applicationRegister == null ? null : applicationRegister.SharedSecret);
+            return (applicationRegister?.SharedSecret);
         }
 
         /// <summary>
@@ -88,8 +93,7 @@ namespace Sif.Framework.Service.Authentication
         public override bool VerifyAuthenticationHeader(HttpRequestHeaders headers)
         {
             string storedSessionToken = sessionService.RetrieveSessionToken(settings.ApplicationKey, settings.SolutionId, settings.UserToken, settings.UserToken);
-            string sessionToken;
-            bool verified = VerifyAuthenticationHeader(headers, false, out sessionToken);
+            bool verified = VerifyAuthenticationHeader(headers, false, out string sessionToken);
 
             return (verified && sessionToken.Equals(storedSessionToken));
         }

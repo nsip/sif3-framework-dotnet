@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2017 Systemic Pty Ltd
+ * Copyright 2018 Systemic Pty Ltd
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,11 @@ namespace Sif.Framework.Providers
     /// <typeparam name="TPrimaryKey">Primary key type of the SIF data model object.</typeparam>
     interface IProvider<TSingle, TMultiple, TPrimaryKey>
     {
+
+        /// <summary>
+        /// Name of the SIF data model that the Provider is based on, e.g. SchoolInfo, StudentPersonal, etc.
+        /// </summary>
+        string TypeName { get; }
 
         /// <summary>
         /// Create a single object.

@@ -20,6 +20,7 @@ using Sif.Framework.Model.Exceptions;
 using Sif.Framework.Providers;
 using Sif.Framework.Service.Providers;
 using Sif.Framework.Utils;
+using Sif.Framework.WebApi.Filters;
 using Sif.Framework.WebApi.ModelBinders;
 using System;
 using System.Collections.Generic;
@@ -46,14 +47,9 @@ namespace Sif.Framework.Demo.Broker.Controllers
             return base.BroadcastEvents(zoneId, contextId);
         }
 
+        [BasicAuthentication]
         public override IHttpActionResult Get([FromUri(Name = "id")] string refId, [MatrixParameter] string[] zoneId = null, [MatrixParameter] string[] contextId = null)
         {
-            string sessionToken;
-
-            if (!authenticationService.VerifyAuthenticationHeader(Request.Headers, out sessionToken))
-            {
-                return Unauthorized();
-            }
 
             if (HttpUtils.HasPagingHeaders(Request.Headers))
             {
@@ -69,7 +65,7 @@ namespace Sif.Framework.Demo.Broker.Controllers
 
             try
             {
-                Subscription obj = service.Retrieve(refId, zoneId: (zoneId == null ? null : zoneId[0]), contextId: (contextId == null ? null : contextId[0]));
+                Subscription obj = Service.Retrieve(refId, zoneId: (zoneId?[0]), contextId: (contextId?[0]));
 
                 if (obj == null)
                 {
@@ -103,14 +99,9 @@ namespace Sif.Framework.Demo.Broker.Controllers
             return base.Post(objs, zoneId, contextId);
         }
 
+        [BasicAuthentication]
         public override IHttpActionResult Post(Subscription obj, [MatrixParameter] string[] zoneId = null, [MatrixParameter] string[] contextId = null)
         {
-            string sessionToken;
-
-            if (!authenticationService.VerifyAuthenticationHeader(Request.Headers, out sessionToken))
-            {
-                return Unauthorized();
-            }
 
             if ((zoneId != null && zoneId.Length != 1) || (contextId != null && contextId.Length != 1))
             {
@@ -129,7 +120,7 @@ namespace Sif.Framework.Demo.Broker.Controllers
 
                     if (hasAdvisoryId)
                     {
-                        Subscription createdObject = service.Create(obj, mustUseAdvisory, zoneId: (zoneId == null ? null : zoneId[0]), contextId: (contextId == null ? null : contextId[0]));
+                        Subscription createdObject = Service.Create(obj, mustUseAdvisory, zoneId: (zoneId?[0]), contextId: (contextId?[0]));
                         string uri = Url.Link("DefaultApi", new { controller = TypeName, id = createdObject.RefId });
                         result = Created(uri, createdObject);
                     }
@@ -141,7 +132,7 @@ namespace Sif.Framework.Demo.Broker.Controllers
                 }
                 else
                 {
-                    Subscription createdObject = service.Create(obj, zoneId: (zoneId == null ? null : zoneId[0]), contextId: (contextId == null ? null : contextId[0]));
+                    Subscription createdObject = Service.Create(obj, zoneId: (zoneId?[0]), contextId: (contextId?[0]));
                     string uri = Url.Link("DefaultApi", new { controller = typeof(Subscription).Name, id = createdObject.RefId });
                     result = Created(uri, createdObject);
                 }

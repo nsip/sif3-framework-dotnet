@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2017 Systemic Pty Ltd
+ * Copyright 2018 Systemic Pty Ltd
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+using Sif.Framework.Service.Authentication;
+using Sif.Framework.Service.Infrastructure;
 using Sif.Specification.Infrastructure;
 using System.Net.Http;
 using System.Web.Http;
@@ -27,6 +29,14 @@ namespace Sif.Framework.Demo.Broker.Controllers
     /// </summary>
     public class EnvironmentsProvider : Framework.Controllers.EnvironmentsController
     {
+
+        /// <summary>
+        /// <see cref="Framework.Controllers.EnvironmentsController.EnvironmentsController(IAuthenticationService, IEnvironmentService)"/>
+        /// </summary>
+        public EnvironmentsProvider(IAuthenticationService authenticationService, IEnvironmentService service)
+            : base(authenticationService, service)
+        {
+        }
 
         // POST api/{controller}
         [HttpPost]

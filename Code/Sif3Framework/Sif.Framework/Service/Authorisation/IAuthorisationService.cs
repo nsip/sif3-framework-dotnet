@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2017 Systemic Pty Ltd
+ * Copyright 2018 Systemic Pty Ltd
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,18 +27,17 @@ namespace Sif.Framework.Service.Authorisation
     {
 
         /// <summary>
-        /// Verifies if the request is authorised. It takes in consideration the permissions and privilegies defined
-        /// in the ACL list for the consumer.
+        /// Verifies if the request is authorised. It takes into consideration the permissions and privileges defined
+        /// in the Rights list for the Consumer.
         /// </summary>
         /// <param name="headers">HTTP request headers.</param>
-        /// <param name="sessionToken">Session token.</param>
         /// <param name="serviceName">The service name to check access rights.</param>
         /// <param name="permission">The permission requested. Any of: ADMIN, CREATE, DELETE, PROVIDE, QUERY, SUBSCRIBE, UPDATE</param>
         /// <param name="privilege">The access level requested. Any of APPROVED, REJECTED, SUPPORTED</param>
         /// <param name="zoneId">The zone of the request.</param>
         /// <exception cref="Model.Exceptions.InvalidSessionException">Session token does not have an associated environment definition.</exception>
-        bool IsAuthorised(HttpRequestHeaders headers,
-            string sessionToken,
+        bool IsAuthorised(
+            HttpRequestHeaders headers,
             string serviceName,
             RightType permission,
             RightValue privilege = RightValue.APPROVED,

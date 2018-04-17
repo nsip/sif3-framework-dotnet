@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2017 Systemic Pty Ltd
+ * Copyright 2018 Systemic Pty Ltd
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,8 +29,16 @@ namespace Sif.Framework.Service.Authentication
     /// <summary>
     /// This interface defines operations associated with authorisation tokens.
     /// </summary>
-    interface IAuthorisationTokenService
+    public interface IAuthorisationTokenService
     {
+
+        /// <summary>
+        /// Extract the session token from the authorisation token.
+        /// </summary>
+        /// <param name="authorisationToken">Authorisation token to process.</param>
+        /// <returns>Session token extracted from the authorisation token.</returns>
+        /// <exception cref="Model.Exceptions.InvalidAuthorisationTokenException">authorisationToken is null, not recognised or invalid.</exception>
+        string ExtractSessionToken(AuthorisationToken authorisationToken);
 
         /// <summary>
         /// Generate an authorisation token.

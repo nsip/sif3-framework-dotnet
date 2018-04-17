@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-using System.Web.Http;
 using Sif.Framework.Persistence;
 using Sif.Framework.Persistence.NHibernate;
-using Sif.Framework.Service.Authentication;
 using Sif.Framework.Service.Infrastructure;
 using SimpleInjector;
 using SimpleInjector.Integration.WebApi;
 using SimpleInjector.Lifestyles;
+using System.Web.Http;
 
-[assembly: WebActivator.PostApplicationStartMethod(typeof(Sif.Framework.EnvironmentProvider.App_Start.SimpleInjectorWebApiInitializer), "Initialize")]
+[assembly: WebActivator.PostApplicationStartMethod(typeof(Sif.Framework.Demo.Broker.App_Start.SimpleInjectorWebApiInitializer), "Initialize")]
 
-namespace Sif.Framework.EnvironmentProvider.App_Start
+namespace Sif.Framework.Demo.Broker.App_Start
 {
 
     /// <summary>
@@ -61,9 +60,6 @@ namespace Sif.Framework.EnvironmentProvider.App_Start
         /// <param name="container">DI container.</param>
         private static void InitializeContainer(Container container)
         {
-            container.Register<IApplicationRegisterRepository, ApplicationRegisterRepository>(Lifestyle.Scoped);
-            container.Register<IApplicationRegisterService, ApplicationRegisterService>(Lifestyle.Scoped);
-            container.Register<IAuthenticationService, DirectAuthenticationService>(Lifestyle.Scoped);
             container.Register<IBaseSessionFactory>(() => EnvironmentProviderSessionFactory.Instance, Lifestyle.Scoped);
             container.Register<IEnvironmentRegisterRepository, EnvironmentRegisterRepository>(Lifestyle.Scoped);
             container.Register<IEnvironmentRegisterService, EnvironmentRegisterService>(Lifestyle.Scoped);

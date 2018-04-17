@@ -43,16 +43,27 @@ namespace Sif.Framework.Service.Authentication
         }
 
         /// <summary>
-        /// <see cref="AuthenticationService.InitialSharedSecret(System.String)">InitialSharedSecret</see>
+        /// <see cref="AuthenticationService.GetEnvironmentBySessionToken(string)">GetEnvironmentBySessionToken</see>
+        /// </summary>
+        public override Environment GetEnvironmentBySessionToken(string sessionToken)
+        {
+            environmentType environment = environmentService.RetrieveBySessionToken(sessionToken);
+
+            return MapperFactory.CreateInstance<environmentType, Environment>(environment);
+        }
+
+        /// <summary>
+        /// <see cref="AuthenticationService.InitialSharedSecret(string)">InitialSharedSecret</see>
         /// </summary>
         protected override string InitialSharedSecret(string applicationKey)
         {
             ApplicationRegister applicationRegister = applicationRegisterService.RetrieveByApplicationKey(applicationKey);
-            return (applicationRegister == null ? null : applicationRegister.SharedSecret);
+
+            return (applicationRegister?.SharedSecret);
         }
 
         /// <summary>
-        /// <see cref="AuthenticationService.SharedSecret(System.String)">SharedSecret</see>
+        /// <see cref="AuthenticationService.SharedSecret(string)">SharedSecret</see>
         /// </summary>
         protected override string SharedSecret(string sessionToken)
         {
@@ -64,16 +75,8 @@ namespace Sif.Framework.Service.Authentication
             }
 
             ApplicationRegister applicationRegister = applicationRegisterService.RetrieveByApplicationKey(environment.applicationInfo.applicationKey);
-            return (applicationRegister == null ? null : applicationRegister.SharedSecret);
-        }
 
-        /// <summary>
-        /// <see cref="AuthenticationService.GetEnvironmentBySessionToken(string)">GetEnvironmentBySessionToken</see>
-        /// </summary>
-        public override Environment GetEnvironmentBySessionToken(string sessionToken)
-        {
-            environmentType environment = environmentService.RetrieveBySessionToken(sessionToken);
-            return MapperFactory.CreateInstance<environmentType, Environment>(environment);
+            return (applicationRegister?.SharedSecret);
         }
 
     }

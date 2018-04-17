@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2014 Systemic Pty Ltd
+ * Copyright 2018 Systemic Pty Ltd
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,9 @@
 
 using Sif.Framework.Demo.Setup.Utils;
 using Sif.Framework.Model.Infrastructure;
+using Sif.Framework.Persistence;
 using Sif.Framework.Persistence.NHibernate;
+using SimpleInjector;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -29,6 +31,25 @@ namespace Sif.Framework.Demo.Setup
     /// </summary>
     class DatabaseCreator
     {
+        private readonly Container container;
+        private readonly IApplicationRegisterRepository applicationRegisterRepository;
+
+        DatabaseCreator()
+        {
+            container = new Container();
+            container.Register<IBaseSessionFactory>(() => EnvironmentProviderSessionFactory.Instance);
+            container.Register<IApplicationRegisterRepository, ApplicationRegisterRepository>();
+            container.Verify();
+            applicationRegisterRepository = container.GetInstance<IApplicationRegisterRepository>();
+        }
+
+        void Create(string locale)
+        {
+            DatabaseManager databaseManager = new DatabaseManager("SifFramework.cfg.xml");
+            databaseManager.CreateDatabaseTables("SifFramework schema.ddl");
+            ICollection<ApplicationRegister> applicationRegisters = DataFactory.CreateApplicationRegisters(locale);
+            applicationRegisterRepository.Save(applicationRegisters);
+        }
 
         /// <summary>
         /// 
@@ -59,11 +80,8 @@ namespace Sif.Framework.Demo.Setup
                 else
                 {
                     Console.WriteLine("Configuring the demonstration for the " + locale + " locale.");
-                    DatabaseManager frameworkDatabaseManager = new DatabaseManager("SifFramework.cfg.xml");
-                    frameworkDatabaseManager.CreateDatabaseTables("SifFramework schema.ddl");
-                    ICollection<ApplicationRegister> applicationRegisters = DataFactory.CreateApplicationRegisters(locale);
-                    ApplicationRegisterRepository applicationRegisterRepository = new ApplicationRegisterRepository();
-                    applicationRegisterRepository.Save(applicationRegisters);
+                    DatabaseCreator databaseCreator = new DatabaseCreator();
+                    databaseCreator.Create(locale);
                 }
 
             }

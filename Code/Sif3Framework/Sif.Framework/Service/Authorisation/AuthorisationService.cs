@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
+using Sif.Framework.Model.Authentication;
 using Sif.Framework.Model.Exceptions;
 using Sif.Framework.Model.Infrastructure;
+using Sif.Framework.Service.Authentication;
 using Sif.Framework.Service.Infrastructure;
 using Sif.Framework.Service.Mapper;
 using Sif.Framework.Utils;
@@ -32,28 +34,32 @@ namespace Sif.Framework.Service.Authorisation
     /// </summary>
     public class AuthorisationService : IAuthorisationService
     {
+        private readonly IAuthorisationTokenService authorisationTokenService;
         private readonly IEnvironmentService environmentService;
 
         /// <summary>
         /// Creates a new instance of this class.
         /// </summary>
+        /// <param name="authorisationTokenService">Authorisation token service.</param>
         /// <param name="environmentService">Environment service.</param>
-        public AuthorisationService(IEnvironmentService environmentService)
+        public AuthorisationService(IAuthorisationTokenService authorisationTokenService, IEnvironmentService environmentService)
         {
+            this.authorisationTokenService = authorisationTokenService;
             this.environmentService = environmentService;
         }
 
         /// <summary>
-        /// <see cref="IAuthorisationService.IsAuthorised(HttpRequestHeaders, string, string, RightType, RightValue, string)">IsAuthorised</see>
+        /// <see cref="IAuthorisationService.IsAuthorised(HttpRequestHeaders, string, RightType, RightValue, string)">IsAuthorised</see>
         /// </summary>
         public virtual bool IsAuthorised(HttpRequestHeaders headers,
-            string sessionToken,
             string serviceName,
             RightType permission,
             RightValue privilege = RightValue.APPROVED,
             string zoneId = null)
         {
             bool isAuthorised = true;
+            AuthorisationToken authorisationToken = new AuthorisationToken { Token = headers.Authorization.ToString() };
+            string sessionToken = authorisationTokenService.ExtractSessionToken(authorisationToken);
             environmentType retrievedEnvironment = environmentService.RetrieveBySessionToken(sessionToken);
             Environment environment = MapperFactory.CreateInstance<environmentType, Environment>(retrievedEnvironment);
 

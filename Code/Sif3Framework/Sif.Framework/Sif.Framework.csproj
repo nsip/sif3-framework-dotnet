@@ -88,7 +88,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Filters\OperationAuthorisationFilter.cs" />
+    <Compile Include="Factory\IServiceFactory.cs" />
+    <Compile Include="Factory\ServiceFactory.cs" />
     <Compile Include="Consumers\BasicEventConsumer.cs" />
     <Compile Include="Consumers\EventConsumer.cs" />
     <Compile Include="Consumers\FunctionalServiceConsumer.cs" />
@@ -213,9 +214,13 @@
     <Compile Include="Utils\RightsUtils.cs" />
     <Compile Include="Utils\ZoneUtils.cs" />
     <Compile Include="Utils\ProviderUtils.cs" />
+    <Compile Include="WebApi\ActionResults\AddChallengeOnUnauthorizedResult.cs" />
+    <Compile Include="WebApi\ActionResults\AuthenticationFailureResult.cs" />
     <Compile Include="WebApi\ActionResults\CustomHeaderResult.cs" />
     <Compile Include="WebApi\ActionResults\EmptyContentResult.cs" />
     <Compile Include="WebApi\ControllerSelectors\ServiceProviderHttpControllerSelector.cs" />
+    <Compile Include="WebApi\Filters\AuthorisationAttribute.cs" />
+    <Compile Include="WebApi\Filters\BasicAuthenticationAttribute.cs" />
     <Compile Include="WebApi\MethodOverrideHandler.cs" />
     <Compile Include="Utils\RegistrationManager.cs" />
     <Compile Include="Utils\SessionsManager.cs" />

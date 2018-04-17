@@ -60,7 +60,7 @@ namespace Sif.Framework.WebApi.Filters
         /// <summary>
         /// <see cref="IAuthenticationFilter.AuthenticateAsync(HttpAuthenticationContext, CancellationToken)"/>
         /// </summary>
-        public async Task AuthenticateAsync(HttpAuthenticationContext context, CancellationToken cancellationToken)
+        public Task AuthenticateAsync(HttpAuthenticationContext context, CancellationToken cancellationToken)
         {
 
             // 1. Look for credentials in the request.
@@ -70,29 +70,30 @@ namespace Sif.Framework.WebApi.Filters
             // 2. If there are no credentials, do nothing.
             if (authorization == null)
             {
-                return;
+                return Task.CompletedTask;
             }
 
             // 3. If there are credentials but the filter does not recognize the 
             //    authentication scheme, do nothing.
             if (authorization.Scheme != "Basic")
             {
-                return;
+                return Task.CompletedTask;
             }
 
             // 4. If there are credentials that the filter understands, try to validate them.
-            // 5. If the credentials are bad, set the error result.
             if (String.IsNullOrEmpty(authorization.Parameter))
             {
                 context.ErrorResult = new AuthenticationFailureResult("Missing credentials", request);
-                return;
+                return Task.CompletedTask;
             }
 
+            // 5. If the credentials are bad, set the error result.
             if (!authenticationService.VerifyAuthenticationHeader(request.Headers))
             {
                 context.ErrorResult = new AuthenticationFailureResult("Invalid credentials", request);
             }
 
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -103,7 +104,7 @@ namespace Sif.Framework.WebApi.Filters
             AuthenticationHeaderValue challenge = new AuthenticationHeaderValue("Basic");
             context.Result = new AddChallengeOnUnauthorizedResult(challenge, context.Result);
 
-            return Task.FromResult(0);
+            return Task.CompletedTask;
         }
 
     }

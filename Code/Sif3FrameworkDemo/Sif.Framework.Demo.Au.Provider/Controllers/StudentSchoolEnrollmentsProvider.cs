@@ -14,15 +14,23 @@
  * limitations under the License.
  */
 
-namespace Sif.Framework.Model.Infrastructure
+using Sif.Framework.Demo.Au.Provider.Models;
+using Sif.Framework.Demo.Au.Provider.Services;
+using Sif.Framework.Providers;
+using System.Web.Http;
+
+namespace Sif.Framework.Demo.Au.Provider.Controllers
 {
-    public enum ServiceType
+    public class StudentSchoolEnrollmentsProvider : BasicProvider<StudentSchoolEnrollment>
     {
-        UTILITY,
-        OBJECT,
-        FUNCTIONAL,
-        SERVICEPATH,
-        XQUERY,
-        TEMPLATE
+        public StudentSchoolEnrollmentsProvider() : base(new StudentSchoolEnrollmentService())
+        {
+        }
+
+        [NonAction]
+        public override IHttpActionResult BroadcastEvents(string zoneId = null, string contextId = null)
+        {
+            return base.BroadcastEvents(zoneId, contextId);
+        }
     }
 }

@@ -14,15 +14,21 @@
  * limitations under the License.
  */
 
-namespace Sif.Framework.Model.Infrastructure
+using Sif.Framework.Consumers;
+using Sif.Framework.Demo.Au.Consumer.Models;
+
+namespace Sif.Framework.Demo.Au.Consumer.Consumers
 {
-    public enum ServiceType
+    internal class StudentSchoolEnrollmentConsumer : BasicConsumer<StudentSchoolEnrollment>
     {
-        UTILITY,
-        OBJECT,
-        FUNCTIONAL,
-        SERVICEPATH,
-        XQUERY,
-        TEMPLATE
+        public StudentSchoolEnrollmentConsumer(string applicationKey, string instanceId = null, string userToken = null, string solutionId = null)
+            : base(applicationKey, instanceId, userToken, solutionId)
+        {
+        }
+
+        public StudentSchoolEnrollmentConsumer(Model.Infrastructure.Environment environment)
+            : base(environment)
+        {
+        }
     }
 }

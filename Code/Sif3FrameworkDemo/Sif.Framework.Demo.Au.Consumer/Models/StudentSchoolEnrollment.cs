@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-namespace Sif.Framework.Model.Infrastructure
+using Sif.Framework.Model.DataModels;
+using Sif.Specification.DataModel.Au;
+using System.Xml.Serialization;
+
+namespace Sif.Framework.Demo.Au.Consumer.Models
 {
-    public enum ServiceType
+    [XmlRoot("StudentSchoolEnrollment", Namespace = "http://www.sifassociation.org/datamodel/au/3.4", IsNullable = false)]
+    [XmlType(Namespace = "http://www.sifassociation.org/datamodel/au/3.4")]
+    public class StudentSchoolEnrollment : StudentSchoolEnrollmentType, IDataModel
     {
-        UTILITY,
-        OBJECT,
-        FUNCTIONAL,
-        SERVICEPATH,
-        XQUERY,
-        TEMPLATE
     }
 }

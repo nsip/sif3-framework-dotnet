@@ -1,12 +1,12 @@
 ﻿/*
  * Copyright 2018 Systemic Pty Ltd
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-using Sif.Framework.Demo.EventsConnector.Models;
-using Sif.Framework.Demo.EventsConnector.Services;
+using Sif.Framework.Demo.Broker.Models;
+using Sif.Framework.Demo.Broker.Services;
 using Sif.Framework.Model.Exceptions;
 using Sif.Framework.Providers;
 using Sif.Framework.Utils;
-using Sif.Framework.WebApi.Filters;
 using Sif.Framework.WebApi.ModelBinders;
 using Sif.Specification.Infrastructure;
 using System;
@@ -28,9 +27,8 @@ using System.Linq;
 using System.Net;
 using System.Web.Http;
 
-namespace Sif.Framework.Demo.EventsConnector.Controllers
+namespace Sif.Framework.Demo.Broker.Controllers
 {
-
     public class EventsProvider : BasicProvider<StudentPersonal>
     {
         private static readonly slf4net.ILogger log = slf4net.LoggerFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -48,7 +46,6 @@ namespace Sif.Framework.Demo.EventsConnector.Controllers
         [BasicAuthentication]
         public override IHttpActionResult Post(List<StudentPersonal> objs, [MatrixParameter] string[] zoneId = null, [MatrixParameter] string[] contextId = null)
         {
-
             foreach (KeyValuePair<string, IEnumerable<string>> nameValues in Request.Headers)
             {
                 if (log.IsDebugEnabled) log.Debug($"*** Header field is [{nameValues.Key}:{string.Join(",", nameValues.Value)}]");
@@ -77,10 +74,8 @@ namespace Sif.Framework.Demo.EventsConnector.Controllers
 
                     try
                     {
-
                         if (mustUseAdvisory.HasValue && mustUseAdvisory.Value == true)
                         {
-
                             if (hasAdvisoryId)
                             {
                                 status.id = Service.Create(obj, mustUseAdvisory, zoneId: (zoneId?[0]), contextId: (contextId?[0])).RefId;
@@ -91,14 +86,12 @@ namespace Sif.Framework.Demo.EventsConnector.Controllers
                                 status.error = ProviderUtils.CreateError(HttpStatusCode.BadRequest, typeof(StudentPersonal).Name, "Create request failed as object ID is not provided, but mustUseAdvisory is true.");
                                 status.statusCode = ((int)HttpStatusCode.BadRequest).ToString();
                             }
-
                         }
                         else
                         {
                             status.id = Service.Create(obj, zoneId: (zoneId?[0]), contextId: (contextId?[0])).RefId;
                             status.statusCode = ((int)HttpStatusCode.Created).ToString();
                         }
-
                     }
                     catch (AlreadyExistsException e)
                     {
@@ -128,7 +121,6 @@ namespace Sif.Framework.Demo.EventsConnector.Controllers
 
                     createStatuses.Add(status);
                 }
-
             }
             catch (Exception)
             {
@@ -140,7 +132,5 @@ namespace Sif.Framework.Demo.EventsConnector.Controllers
 
             return result;
         }
-
     }
-
 }

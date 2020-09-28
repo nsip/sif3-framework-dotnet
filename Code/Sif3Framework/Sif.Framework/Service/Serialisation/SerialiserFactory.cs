@@ -132,11 +132,25 @@ namespace Sif.Framework.Service.Serialisation
         /// <typeparam name="T">Type of the object associated with the serialiser.</typeparam>
         /// <param name="rootAttribute">XML root attribute associated with the serialiser (if specified).</param>
         /// <returns>XML serialiser.</returns>
-        public static ISerialiser<T> GetXmlSerialiser<T>(XmlRootAttribute rootAttribute = null)
+        public static ISerialiser<T> GetXmlSerialiser<T>(XmlRootAttribute rootAttribute = null, XmlAttributeOverrides overrides = null)
         {
             ISerialiser<T> serialiser;
 
-            if (rootAttribute == null)
+            if (overrides != null)
+            {
+                //int serialiserKey = GenerateKey(typeof(T), rootAttribute);
+
+                //if (xmlSerializers.TryGetValue(serialiserKey, out ISerialiser xmlSerializer))
+                //{
+                //    serialiser = (ISerialiser<T>)xmlSerializer;
+                //}
+                //else
+                //{
+                    serialiser = new XmlSerialiser<T>(overrides);
+                    //xmlSerializers.Add(serialiserKey, (XmlSerialiser<T>)serialiser);
+                //}
+            }
+            else if (rootAttribute == null)
             {
                 serialiser = new XmlSerialiser<T>();
             }
@@ -150,7 +164,7 @@ namespace Sif.Framework.Service.Serialisation
                 }
                 else
                 {
-                    serialiser = new XmlSerialiser<T>(rootAttribute);
+                    serialiser = new XmlSerialiser<T>(rootAttribute, overrides);
                     xmlSerializers.Add(serialiserKey, (XmlSerialiser<T>)serialiser);
                 }
             }

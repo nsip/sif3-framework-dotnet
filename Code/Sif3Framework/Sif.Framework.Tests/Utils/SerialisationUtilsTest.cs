@@ -16,6 +16,7 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sif.Framework.Service.Serialisation;
+using Sif.Specification.DataModel.Au;
 using Sif.Specification.Infrastructure;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -149,6 +150,26 @@ namespace Sif.Framework.Utils
 
             environmentTypes = SerialiserFactory.GetXmlSerialiser<Collection<environmentType>>(xmlRootAttribute).Deserialise(xmlString);
             System.Console.WriteLine("Number deserialised is " + environmentTypes.Count);
+        }
+
+        [TestMethod]
+        public void XmlStudentPersonal_Serialisation()
+        {
+            StudentPersonalType student = new StudentPersonalType();
+
+            XmlElementAttribute attr = new XmlElementAttribute();
+            attr.IsNullable = false;
+
+            XmlAttributes attrs = new XmlAttributes();
+            attrs.XmlElements.Add(attr);
+
+            XmlAttributeOverrides attrOverrides = new XmlAttributeOverrides();
+            attrOverrides.Add(typeof(StudentPersonalType), attrs);
+
+            XmlRootAttribute root = new XmlRootAttribute() { Namespace = SettingsManager.ProviderSettings.DataModelNamespace, IsNullable = true };
+            string xmlString = SerialiserFactory.GetXmlSerialiser<StudentPersonalType>(overrides: attrOverrides).Serialise(student);
+            ////Assert.AreEqual(xmlString, environmentText.Trim(), true, "Environment deserialised does not match serialised version.");
+            //System.Console.WriteLine(xmlString);
         }
 
     }

@@ -42,6 +42,20 @@ namespace Sif.Framework.Service.Serialisation
         }
 
         /// <summary>
+        /// <see cref="XmlSerializer(System.Type, XmlRootAttribute)"/>
+        /// </summary>
+        public XmlSerialiser(XmlAttributeOverrides overrides) : base(typeof(T), overrides)
+        {
+        }
+
+        /// <summary>
+        /// <see cref="XmlSerializer(System.Type, XmlRootAttribute)"/>
+        /// </summary>
+        public XmlSerialiser(XmlRootAttribute root, XmlAttributeOverrides overrides) : base(typeof(T), overrides, null, root, null)
+        {
+        }
+
+        /// <summary>
         /// <see cref="ISerialiser{T}.Deserialise(Stream)"/>
         /// </summary>
         public T Deserialise(Stream stream)

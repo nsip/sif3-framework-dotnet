@@ -169,8 +169,8 @@
     <Reference Include="Sif.Framework.NHibernate, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Sif.Framework.NHibernate.1.0.0\lib\netstandard2.0\Sif.Framework.NHibernate.dll</HintPath>
     </Reference>
-    <Reference Include="Sif.Specification.DataModel.Au, Version=3.4.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Sif.Specification.DataModel.Au.3.4.8\lib\netstandard2.0\Sif.Specification.DataModel.Au.dll</HintPath>
+    <Reference Include="Sif.Specification.DataModel.Au, Version=3.6.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sif.Specification.DataModel.Au.3.6.3\lib\netstandard2.0\Sif.Specification.DataModel.Au.dll</HintPath>
     </Reference>
     <Reference Include="Sif.Specification.Infrastructure, Version=3.2.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Sif.Specification.Infrastructure.3.2.1\lib\netstandard2.0\Sif.Specification.Infrastructure.dll</HintPath>

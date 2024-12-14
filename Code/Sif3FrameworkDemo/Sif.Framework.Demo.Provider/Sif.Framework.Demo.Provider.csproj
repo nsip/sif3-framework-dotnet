@@ -10,7 +10,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.4" />
     <PackageReference Include="Sif.Framework.AspNetCore" Version="1.1.0" />
     <PackageReference Include="Sif.Framework.EntityFrameworkCore" Version="1.0.1" />
-    <PackageReference Include="Sif.Specification.DataModel.Au" Version="3.4.8" />
+    <PackageReference Include="Sif.Specification.DataModel.Au" Version="3.6.3" />
   </ItemGroup>
 
 </Project>

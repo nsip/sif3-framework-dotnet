@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2022 Systemic Pty Ltd
+ * Copyright 2024 Systemic Pty Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@ using System.Xml.Serialization;
 
 namespace Sif.Framework.Demo.Au.Provider.Models
 {
-    [XmlRoot("StudentPersonal", Namespace = "http://www.sifassociation.org/datamodel/au/3.4", IsNullable = false)]
-    [XmlType(Namespace = "http://www.sifassociation.org/datamodel/au/3.4")]
+    [XmlRoot("StudentPersonal", Namespace = "http://www.sifassociation.org/datamodel/au/3.6", IsNullable = false)]
+    [XmlType(Namespace = "http://www.sifassociation.org/datamodel/au/3.6")]
     public class StudentPersonal : StudentPersonalType, IDataModel
     {
     }

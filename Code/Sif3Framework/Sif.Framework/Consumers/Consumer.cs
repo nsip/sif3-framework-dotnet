@@ -399,6 +399,9 @@ namespace Sif.Framework.Consumers
                     requestHeaders: GetHeaderParameters(requestParameters));
             }
 
+            if (_log.IsDebugEnabled) _log.Debug("Response from GET request ...");
+            if (_log.IsDebugEnabled) _log.Debug(responseBody);
+
             return DeserialiseMultiple(responseBody);
         }
 

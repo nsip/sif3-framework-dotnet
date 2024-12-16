@@ -54,6 +54,14 @@ namespace Sif.Framework.Demo.Au.Provider
                 SerialiserFactory.GetXmlSerialiser<List<StudentPersonal>>(studentPersonalsXmlRootAttribute);
             xmlFormatter.SetSerializer<List<StudentPersonal>>((XmlSerializer)studentPersonalsSerialiser);
 
+            var studentDataTransferNotesXmlRootAttribute = new XmlRootAttribute("StudentDataTransferNotes")
+            { Namespace = settings.DataModelNamespace, IsNullable = false };
+            ISerialiser<List<StudentDataTransferNote>> studentDataTransferNotesSerialiser =
+                SerialiserFactory.GetXmlSerialiser<List<StudentDataTransferNote>>(
+                    studentDataTransferNotesXmlRootAttribute);
+            xmlFormatter.SetSerializer<List<StudentDataTransferNote>>(
+                (XmlSerializer)studentDataTransferNotesSerialiser);
+
             var studentSchoolEnrollmentsXmlRootAttribute = new XmlRootAttribute("StudentSchoolEnrollments")
             { Namespace = settings.DataModelNamespace, IsNullable = false };
             ISerialiser<List<StudentSchoolEnrollment>> studentSchoolEnrollmentsSerialiser =
@@ -66,6 +74,8 @@ namespace Sif.Framework.Demo.Au.Provider
             var xmlToJsonFormatter = new XmlToJsonFormatter { UseXmlSerializer = true };
             xmlToJsonFormatter.AddUriPathExtensionMapping("json", "application/json");
             xmlToJsonFormatter.SetSerializer<List<SchoolInfo>>((XmlSerializer)schoolInfosSerialiser);
+            xmlToJsonFormatter.SetSerializer<List<StudentDataTransferNote>>(
+                (XmlSerializer)studentDataTransferNotesSerialiser);
             xmlToJsonFormatter.SetSerializer<List<StudentPersonal>>((XmlSerializer)studentPersonalsSerialiser);
             xmlToJsonFormatter.SetSerializer<List<StudentSchoolEnrollment>>(
                 (XmlSerializer)studentSchoolEnrollmentsSerialiser);
